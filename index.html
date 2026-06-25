@@ -532,34 +532,23 @@ const CONFIG = {
    feature: "Most Popular" | "Recommended" | "Recently Added" (optional)
    soon: true  -> shows a greyed "coming soon" card (no file needed)
    ===================================================================== */
-const RESOURCES = [
-  { tag:"Vocabulary", cats:["Vocabulary","MCQ"],
-    title:"Essential 333 — Vocabulary Drill",
-    desc:"All 333 high-frequency exam words as IBA/GRE-level MCQs: context, synonym, antonym & definition, with score tracking and a review-mistakes mode.",
-    meta:"333 words \u00b7 504 questions", file:"essential-333-vocab-drill.html",
-    feature:"Most Popular" },
-
-  { tag:"Job Prep", cats:["Job Preparation","MCQ"],
-    title:"Spelling MCQ Test",
-    desc:"Exam-style spelling practice for BB AD and bank written tests. Pick the correct spelling, get instant feedback, review what you missed.",
-    meta:"Rename your file to match", file:"spelling-test.html",
-    feature:"Recommended" },
-
-  { tag:"Reading", cats:["Reading","MCQ"],
-    title:"Comprehension Drill",
-    desc:"Short passages with targeted MCQs to build reading speed and accuracy under exam pressure.",
-    meta:"40 passages", soon:true },
-
-  { tag:"Mathematics", cats:["Mathematics"],
-    title:"Math Shortcuts Pack",
-    desc:"Fast methods for arithmetic, ratios and number properties — the recurring question types in admission and bank tests.",
-    meta:"In progress", soon:true },
-
-  { tag:"University", cats:["University","Notes","PDF"],
-    title:"University Study Notes",
-    desc:"Clean, organized notes and summaries for core university courses, downloadable as PDFs.",
-    meta:"PDF \u00b7 growing", soon:true }
-];
+/* RESOURCES now lives in data/resources.json — that is the ONLY file you
+   ever need to edit to add, remove, or update a resource card.
+   Schema per entry:
+     {
+       "tag":   "Short label shown on the card, e.g. '1300 Words'",
+       "cats":  ["Vocabulary","Bank Job"],   // any strings, any count —
+                                              // filter pills are generated
+                                              // automatically from these,
+                                              // no fixed category list
+       "title": "Full title of the resource",
+       "desc":  "One or two sentence description.",
+       "meta":  "e.g. '287 questions · 16 chapters'",
+       "file":  "exact-filename-as-uploaded.html"   // omit + use "soon":true
+                                                      // for not-yet-built tools
+     }
+   RESOURCES starts empty and is filled in by loadResources() below. */
+let RESOURCES = [];
 
 const PHILOSOPHY = [
   { t:"Curated, not cluttered", d:"Every resource is chosen and organized on purpose \u2014 no noise, no filler.", i:"check" },
@@ -577,7 +566,10 @@ const TIMELINE = [
   { y:"Next", t:"Expanding tools & guidance", d:"More interactive drills, walkthroughs, and exam strategy.", future:true }
 ];
 
-const FILTERS = ["All","Reading","Vocabulary","Mathematics","University","Job Preparation","MCQ","Notes","PDF"];
+/* FILTERS is no longer hardcoded — it is derived automatically from every
+   distinct value found in each resource's "cats" array (see loadResources
+   below). Add a brand-new category to any entry in resources.json and a
+   matching filter pill appears with zero code changes. */
 
 /* ---------- icons ---------- */
 const ICON = {
@@ -611,7 +603,7 @@ function cardHTML(r){
     '<span class="open">'+(r.soon?'Coming soon':'Open resource')+(r.soon?'':' <span class="ar">&rarr;</span>')+'</span>';
   return (r.soon||!r.file)
     ? '<div class="card soon">'+inner+'</div>'
-    : '<a class="card" href="'+esc(r.file)+'">'+inner+'</a>';
+    : '<a class="card" href="'+esc(r.file)+'" target="_blank" rel="noopener">'+inner+'</a>';
 }
 function renderCards(){
   const list = RESOURCES.filter(matches);
@@ -619,29 +611,55 @@ function renderCards(){
   emptyEl.style.display = list.length ? 'none' : 'block';
 }
 
-/* ---------- filters ---------- */
+/* ---------- filters (built dynamically from RESOURCES cats — open-ended,
+   no fixed list; "All" is always first) ---------- */
 const filtersEl = document.getElementById('filters');
-filtersEl.innerHTML = FILTERS.map(f=>{
-  const count = f==="All" ? RESOURCES.length : RESOURCES.filter(r=>(r.cats||[]).includes(f)).length;
-  return '<button class="chip'+(f==="All"?' on':'')+'" data-cat="'+esc(f)+'">'+esc(f)+
-         '<span class="ct">'+count+'</span></button>';
-}).join('');
-filtersEl.querySelectorAll('.chip').forEach(c=>{
-  c.onclick=()=>{ activeCat=c.dataset.cat; filtersEl.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); renderCards(); };
-});
+function renderFilters(){
+  const catSet = new Set();
+  RESOURCES.forEach(r => (r.cats||[]).forEach(c => catSet.add(c)));
+  const FILTERS = ["All", ...Array.from(catSet).sort((a,b)=>a.localeCompare(b))];
+
+  filtersEl.innerHTML = FILTERS.map(f=>{
+    const count = f==="All" ? RESOURCES.length : RESOURCES.filter(r=>(r.cats||[]).includes(f)).length;
+    return '<button class="chip'+(f===activeCat?' on':'')+'" data-cat="'+esc(f)+'">'+esc(f)+
+           '<span class="ct">'+count+'</span></button>';
+  }).join('');
+  filtersEl.querySelectorAll('.chip').forEach(c=>{
+    c.onclick=()=>{ activeCat=c.dataset.cat; filtersEl.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c)); renderCards(); };
+  });
+}
 document.getElementById('search').addEventListener('input',e=>{ query=e.target.value; renderCards(); });
-renderCards();
 
 /* ---------- featured ---------- */
-document.getElementById('featured-cards').innerHTML =
-  RESOURCES.filter(r=>r.feature && !r.soon).slice(0,6).map(r=>
-    '<a class="fcard" href="'+esc(r.file)+'">'+
-      '<div class="flabel">'+esc(r.feature)+'</div>'+
-      '<h3>'+esc(r.title)+'</h3>'+
-      '<p>'+esc(r.desc)+'</p>'+
-      '<span class="open">Open resource <span class="ar">&rarr;</span></span>'+
-    '</a>').join('') ||
-  '<div class="lib-empty" style="display:block">Featured resources will appear here.</div>';
+function renderFeatured(){
+  document.getElementById('featured-cards').innerHTML =
+    RESOURCES.filter(r=>r.feature && !r.soon).slice(0,6).map(r=>
+      '<a class="fcard" href="'+esc(r.file)+'" target="_blank" rel="noopener">'+
+        '<div class="flabel">'+esc(r.feature)+'</div>'+
+        '<h3>'+esc(r.title)+'</h3>'+
+        '<p>'+esc(r.desc)+'</p>'+
+        '<span class="open">Open resource <span class="ar">&rarr;</span></span>'+
+      '</a>').join('') ||
+    '<div class="lib-empty" style="display:block">Featured resources will appear here.</div>';
+}
+
+/* ---------- load resources.json, then render everything that depends
+   on it. If the fetch fails (e.g. opened as a local file:// without a
+   server), fall back to an empty list rather than breaking the page. ---------- */
+async function loadResources(){
+  try{
+    const res = await fetch('data/resources.json');
+    RESOURCES = await res.json();
+  }catch(err){
+    console.error('Could not load data/resources.json', err);
+    RESOURCES = [];
+  }
+  renderFilters();
+  renderCards();
+  renderFeatured();
+  document.getElementById('stat-res').textContent = RESOURCES.filter(r=>!r.soon && r.file).length;
+}
+loadResources();
 
 /* ---------- philosophy ---------- */
 document.getElementById('phil').innerHTML = PHILOSOPHY.map(p=>
@@ -654,8 +672,6 @@ document.getElementById('timeline').innerHTML = TIMELINE.map(t=>
    '<div class="body"><h3>'+esc(t.t)+'</h3><p>'+esc(t.d)+'</p></div></div>'
 ).join('');
 
-/* ---------- stats ---------- */
-document.getElementById('stat-res').textContent = RESOURCES.filter(r=>!r.soon && r.file).length;
 document.getElementById('yr').textContent = new Date().getFullYear();
 
 /* ---------- wire CONFIG links ---------- */
