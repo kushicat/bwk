@@ -1,0 +1,27 @@
+[
+  {
+    "_comment": "Add/remove course objects here. status: waitlist | enrolling | live | coming-soon",
+    "title": "IBA MBA Prep — Quant Foundations",
+    "description": "Concept-first quantitative aptitude for the IBA MBA admission test, taught by someone who cracked it through self-study.",
+    "status": "waitlist",
+    "features": [
+      "Arithmetic, algebra & geometry from first principles",
+      "Timed practice sets matching real exam difficulty",
+      "Weekly structured study plan"
+    ],
+    "cta": "Join Waitlist",
+    "link": "#waitlist"
+  },
+  {
+    "title": "Bank Job Written Test — Complete Prep",
+    "description": "English, Bangla, Math, and General Knowledge structured around what bank recruitment tests actually ask.",
+    "status": "coming-soon",
+    "features": [
+      "Spelling, vocabulary & grammar drills",
+      "Bank-specific GK and current affairs",
+      "Full-length mock written tests"
+    ],
+    "cta": "Join Waitlist",
+    "link": "#waitlist"
+  }
+]

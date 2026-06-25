@@ -1,0 +1,64 @@
+/* ============================================================================
+   BALLPOINT WITH KUSHAL — library.css
+   Styles specific to the Resource Library page (search input + filter chips).
+   Namespaced under .lib- so nothing here collides with components.css.
+   ============================================================================ */
+.lib-hero .section-head { max-width: 760px; margin-bottom: var(--space-lg); margin-inline: 0; text-align: left; }
+
+.lib-controls {
+  display: flex; flex-wrap: wrap; gap: var(--space-md);
+  align-items: stretch; margin-bottom: var(--space-lg);
+}
+
+.lib-search {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: var(--white); border: var(--border-w) solid var(--ink);
+  border-radius: var(--radius-md); padding: 0.75rem 1rem;
+  box-shadow: var(--shadow-sm);
+  flex: 1 1 280px; min-width: 240px;
+}
+.lib-search svg { width: 20px; height: 20px; flex-shrink: 0; }
+.lib-search input {
+  border: none; outline: none; background: transparent; width: 100%;
+  font-family: var(--font-body); font-size: var(--fs-body); color: var(--ink);
+}
+.lib-search input::placeholder { color: var(--color-text-muted); }
+
+.lib-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.02em;
+  background: var(--white); color: var(--ink);
+  border: 2.5px solid var(--ink); border-radius: var(--radius-pill);
+  padding: 0.5rem 0.9rem;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition), color var(--transition);
+}
+.chip:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+.chip.on { background: var(--ballpoint); color: var(--white); border-color: var(--ink); }
+.chip .ct {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding: 0 0.3rem;
+  background: var(--exam-yellow); color: var(--ink);
+  border: 1.5px solid var(--ink); border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+}
+.chip.on .ct { background: var(--white); }
+
+.card.soon { opacity: 0.7; cursor: default; }
+.card.soon:hover { transform: none; box-shadow: var(--shadow-md); }
+.card .tag {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.03em;
+  background: var(--exam-yellow); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: var(--radius-sm);
+  padding: 0.2rem 0.55rem; margin-bottom: 0.6rem;
+}
+.card .meta { font-family: var(--font-mono); font-size: var(--fs-small); color: var(--color-text-muted); margin: 0.4rem 0 0.8rem; }
+.card .open { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-small); text-transform: uppercase; color: var(--ballpoint); }
+.card .ar { transition: transform var(--transition); }
+.card:hover .ar { transform: translateX(3px); }
+
+.lib-empty { display: none; text-align: center; padding: var(--space-xl) 0; color: var(--color-text-muted); font-weight: 600; }

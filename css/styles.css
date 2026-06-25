@@ -1,0 +1,263 @@
+/* ============================================================================
+   BALLPOINT WITH KUSHAL — styles.css  (NEOBRUTALIST EDITION)
+   Base layer: design tokens, reset, typography, layout primitives.
+
+   DESIGN DIRECTION
+   The brand is a ballpoint pen marking an exam paper: thick ink borders,
+   hard offset shadows (no blur), warm paper background, and one loud
+   accent colour pulled straight from the hero portrait's halftone yellow.
+   Nothing here is rounded-soft or gradient-blurred on purpose — that was
+   the old direction. This is closer to a stamped answer sheet than a SaaS
+   landing page.
+
+   HOW THIS FILE IS ORGANISED
+   1. Design tokens (CSS variables)  <-- EDIT COLOURS, FONTS & SPACING HERE ONLY
+   2. Reset & base elements
+   3. Typography
+   4. Layout primitives (container, section, grid)
+   5. Section-specific base styles
+   ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+   1. DESIGN TOKENS  —  the ONLY place you should change colours / fonts / spacing
+   ---------------------------------------------------------------------------- */
+:root {
+  /* Brand colours — pulled from the hero portrait's duotone treatment */
+  --ink: #0E0E10;              /* near-black: text, borders, default ink */
+  --paper: #F5F2E8;            /* warm off-white: page background, "paper" */
+  --paper-alt: #ECE6D6;        /* slightly deeper paper tone for alt sections */
+  --ballpoint: #1E3FE0;        /* saturated true blue: primary accent */
+  --ballpoint-dark: #142BA0;
+  --exam-yellow: #FFD23F;      /* halftone yellow from the hero art: highlight accent */
+  --correct-green: #0F8A4F;    /* exam-pass green: secondary accent */
+  --alert-red: #E8432F;        /* used sparingly: "problem" column, urgent CTAs */
+  --white: #FFFFFF;
+
+  /* Legacy variable names kept as aliases so nothing silently breaks if a
+     class still references the old soft-theme tokens. */
+  --color-primary: var(--ballpoint);
+  --color-primary-dark: var(--ballpoint-dark);
+  --color-primary-light: #DCE3FB;
+  --color-secondary: var(--correct-green);
+  --color-secondary-dark: #0B6B3D;
+  --color-secondary-light: #D6F0E1;
+  --color-text: var(--ink);
+  --color-text-soft: #33333A;
+  --color-text-muted: #5C5C66;
+  --color-bg: var(--paper);
+  --color-surface: var(--white);
+  --color-border: var(--ink);
+  --color-border-soft: #C9C3B0;
+
+  /* Old gradient tokens are retired — neobrutalism uses flat colour, not
+     gradients or blur. Kept defined (flat, not blurred) only so any
+     leftover .text-gradient usage doesn't break visually. */
+  --gradient-brand: var(--ballpoint);
+  --gradient-brand-soft: var(--exam-yellow);
+
+  /* Typography
+     Display: Space Grotesk — blocky, geometric, exam-paper energy
+     Body:    Inter — stays neutral and readable
+     Mono:    Space Mono — question numbers, stats, meta tags */
+  --font-display: 'Space Grotesk', 'Arial Black', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'Space Mono', 'Courier New', monospace;
+
+  /* Fluid type scale (clamp = scales smoothly between mobile & desktop) */
+  --fs-hero: clamp(2.5rem, 6vw + 1rem, 4.75rem);
+  --fs-h1: clamp(2.1rem, 3.8vw + 1rem, 3.2rem);
+  --fs-h2: clamp(1.7rem, 2.6vw + 0.8rem, 2.6rem);
+  --fs-h3: clamp(1.25rem, 1.2vw + 0.8rem, 1.5rem);
+  --fs-lead: clamp(1.05rem, 0.6vw + 0.9rem, 1.3rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+
+  /* Spacing scale */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+
+  /* Radius & shadow — neobrutalist: sharp corners, hard offset shadows,
+     NO blur, NO soft glow. Shadow is a solid block of ink offset from
+     the element, like a card stamped slightly off-register. */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;       /* kept for status pills/chips only */
+  --border-w: 3px;
+  --shadow-offset: 6px;
+  --shadow-sm: 4px 4px 0 var(--ink);
+  --shadow-md: var(--shadow-offset) var(--shadow-offset) 0 var(--ink);
+  --shadow-lg: 9px 9px 0 var(--ink);
+  --shadow-glow: var(--shadow-offset) var(--shadow-offset) 0 var(--ballpoint);
+
+  /* Layout */
+  --container-max: 1200px;
+  --navbar-height: 76px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: 0.15s var(--ease);
+}
+
+/* ----------------------------------------------------------------------------
+   2. RESET & BASE
+   ---------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--navbar-height);
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  position: relative;
+}
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; font-size: inherit; }
+
+/* Accessible focus ring for keyboard navigation — thick and high-contrast,
+   matching the brand rather than a generic blue glow */
+:focus-visible {
+  outline: 3px solid var(--ballpoint);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--ink); color: var(--paper);
+  padding: 0.75rem 1.25rem; z-index: 1000;
+  font-weight: 700; font-family: var(--font-mono);
+}
+.skip-link:focus { left: 0; }
+
+/* ----------------------------------------------------------------------------
+   3. TYPOGRAPHY
+   ---------------------------------------------------------------------------- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+h1 { font-size: var(--fs-h1); text-transform: uppercase; }
+h2 { font-size: var(--fs-h2); text-transform: uppercase; }
+h3 { font-size: var(--fs-h3); font-weight: 700; }
+p  { color: var(--color-text-soft); }
+
+.lead { font-size: var(--fs-lead); color: var(--color-text-soft); }
+
+/* "Gradient text" helper retired in favour of an animated ballpoint
+   highlight mark — the yellow sweeps in left-to-right like a highlighter,
+   once, on page load (respects prefers-reduced-motion). */
+.text-gradient {
+  position: relative;
+  color: var(--ink);
+  padding: 0 0.15em;
+  box-shadow: inset 0 -2px 0 var(--ink);
+  background-image: linear-gradient(var(--exam-yellow), var(--exam-yellow));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  background-position: left center;
+  animation: highlight-sweep 0.6s ease-out 0.5s forwards;
+}
+@keyframes highlight-sweep {
+  to { background-size: 100% 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .text-gradient { animation: none; background-size: 100% 100%; }
+}
+
+/* Monospace utility for stats, meta tags, question counters */
+.mono { font-family: var(--font-mono); }
+
+/* ----------------------------------------------------------------------------
+   4. LAYOUT PRIMITIVES
+   ---------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.section { padding-block: var(--space-2xl); }
+.section--tight { padding-block: var(--space-xl); }
+.section--alt { background: var(--paper-alt); border-top: var(--border-w) solid var(--ink); border-bottom: var(--border-w) solid var(--ink); }
+
+.section-head { max-width: 720px; margin-bottom: var(--space-lg); }
+.section-head--center { margin-inline: auto; text-align: center; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: var(--font-mono);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--exam-yellow);
+  border: 2px solid var(--ink);
+  padding: 0.2rem 0.65rem;
+  margin-bottom: var(--space-sm);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.35s var(--ease);
+}
+.eyebrow.is-revealed { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow { transform: scaleX(1); transition: none; }
+}
+.section-head p { margin-top: var(--space-sm); font-size: var(--fs-lead); }
+
+.grid { display: grid; gap: var(--space-md); }
+.grid--2 { grid-template-columns: repeat(2, 1fr); }
+.grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid--auto { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+/* ----------------------------------------------------------------------------
+   5. BACKGROUND — RULED NOTEBOOK GRID
+   Replaces the old soft-blob decoration. A fixed full-page backdrop of thin
+   ruled lines (like exam/notebook paper), subtle enough to sit behind all
+   content without competing with it. Toggled on <body> via main.js so it
+   can be paused for prefers-reduced-motion.
+   ---------------------------------------------------------------------------- */
+.bg-grid {
+  position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%;
+  pointer-events: none;
+}
+.bg-grid svg { width: 100%; height: 100%; }
+.bg-grid .gline { stroke: var(--color-border-soft); stroke-width: 1; }
+.bg-grid .gline--margin { stroke: rgba(232,67,47,0.35); stroke-width: 1.5; }
+
+.bg-decor { position: relative; overflow: hidden; }
+.bg-decor > * { position: relative; z-index: 1; }

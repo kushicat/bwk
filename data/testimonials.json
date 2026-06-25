@@ -1,0 +1,10 @@
+{
+  "_comment": "Do NOT publish invented testimonials or made-up numbers — this misleads visitors and can violate advertising/consumer-protection rules. Stats below are real zeros until you have real numbers. testimonials is an empty array until you have genuine, permissioned quotes. If you have neither, consider removing the Testimonials section from index.html entirely (see SECTION 8) rather than showing zeros.",
+  "stats": [
+    { "value": 0, "label": "Students Reached" },
+    { "value": 0, "label": "Hours of Content" },
+    { "value": 0, "label": "Resources Published" },
+    { "value": 0, "label": "Years Teaching" }
+  ],
+  "testimonials": []
+}
