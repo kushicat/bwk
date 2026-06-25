@@ -1,0 +1,44 @@
+[
+  {
+    "tag": "Vocabulary",
+    "cats": ["Vocabulary", "MCQ"],
+    "title": "Essential 333 — Vocabulary Drill",
+    "desc": "All 333 high-frequency exam words (Barron's 333) as IBA/GRE-level MCQs: context, synonym, antonym & definition, with score tracking and a review-mistakes mode.",
+    "meta": "333 words · 504 questions",
+    "file": "essential-333-vocab-drill.html",
+    "feature": "Most Popular"
+  },
+  {
+    "tag": "Job Prep",
+    "cats": ["Job Preparation", "Vocabulary", "MCQ"],
+    "title": "Spelling MCQ Test",
+    "desc": "Exam-style spelling practice for BB AD and bank written tests, covering around 1,000 important spelling words. Pick the correct spelling, get instant feedback, review what you missed.",
+    "meta": "~1,000 words",
+    "file": "spelling-test.html",
+    "feature": "Recommended"
+  },
+  {
+    "tag": "Reading",
+    "cats": ["Reading", "MCQ"],
+    "title": "Comprehension Drill",
+    "desc": "Short passages with targeted MCQs to build reading speed and accuracy under exam pressure.",
+    "meta": "40 passages",
+    "soon": true
+  },
+  {
+    "tag": "Mathematics",
+    "cats": ["Mathematics"],
+    "title": "Math Shortcuts Pack",
+    "desc": "Fast methods for arithmetic, ratios and number properties — the recurring question types in admission and bank tests.",
+    "meta": "In progress",
+    "soon": true
+  },
+  {
+    "tag": "University",
+    "cats": ["University", "Notes", "PDF"],
+    "title": "University Study Notes",
+    "desc": "Clean, organized notes and summaries for core university courses, downloadable as PDFs.",
+    "meta": "PDF · growing",
+    "soon": true
+  }
+]
