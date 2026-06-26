@@ -11,9 +11,10 @@ window.BPK = window.BPK || {};
 
   /* ---------------------- scroll reveal for [data-reveal] ------------------
      Also automatically watches every .eyebrow tag (the small yellow pills)
-     so they get their pop-in animation without needing data-reveal added
-     by hand to each one in the HTML. */
-  const revealEls = document.querySelectorAll('[data-reveal], .eyebrow');
+     and .text-gradient (the animated highlighter marks) so they get their
+     pop-in / sweep-in animation without needing data-reveal added by hand
+     to each one in the HTML. */
+  const revealEls = document.querySelectorAll('[data-reveal], .eyebrow, .text-gradient, .scribble-wrap');
   if (revealEls.length) {
     if (reduceMotion) {
       revealEls.forEach(el => el.classList.add('is-revealed'));
@@ -21,8 +22,17 @@ window.BPK = window.BPK || {};
       const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            io.unobserve(entry.target);
+            const el = entry.target;
+            if (el.classList.contains('text-gradient')) {
+              /* Let the parent's own fade/translate transition start first,
+                 then sweep the highlight in shortly after — looks like the
+                 highlighter is marking text that has already appeared,
+                 rather than racing it. */
+              setTimeout(() => el.classList.add('is-revealed'), 350);
+            } else {
+              el.classList.add('is-revealed');
+            }
+            io.unobserve(el);
           }
         });
       }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
@@ -133,5 +143,66 @@ window.BPK = window.BPK || {};
     });
 
     updateBall();
+  }
+
+  /* --------------------------- custom ballpoint cursor ---------------------
+     Only activates on devices with a real mouse (pointer: fine) — touch
+     devices never run this, so the system cursor / native tap behaviour on
+     phones and tablets is completely untouched. Respects reduced-motion by
+     skipping the smoothing lag (snaps directly instead of easing). */
+  const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+  if (hasFinePointer) {
+    const cursor = document.createElement('div');
+    cursor.id = 'customCursor';
+    cursor.innerHTML = `
+      <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="2" width="10" height="18" rx="2" fill="#1E3FE0" stroke="#0E0E10" stroke-width="2"/>
+        <polygon points="9,20 19,20 14,27" fill="#0E0E10"/>
+      </svg>`;
+    document.body.appendChild(cursor);
+    document.documentElement.classList.add('has-custom-cursor');
+
+    let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    let shown = false;
+
+    function placeCursor(x, y) {
+      cx = x; cy = y;
+      cursor.style.left = x + 'px';
+      cursor.style.top = y + 'px';
+      if (!shown) { cursor.classList.add('is-active'); shown = true; }
+    }
+
+    window.addEventListener('mousemove', (e) => placeCursor(e.clientX, e.clientY), { passive: true });
+    window.addEventListener('mouseleave', () => cursor.classList.remove('is-active'));
+    window.addEventListener('mouseenter', () => { if (shown) cursor.classList.add('is-active'); });
+
+    document.addEventListener('mousedown', () => cursor.classList.add('is-down'));
+    document.addEventListener('mouseup', () => cursor.classList.remove('is-down'));
+
+    /* Bigger/rotated nib when hovering anything clickable, so it's obvious
+       what counts as interactive without relying on the (now-hidden)
+       system cursor's usual pointer-shape change. */
+    document.addEventListener('mouseover', (e) => {
+      if (e.target.closest('a, button, input, select, textarea, [role="button"]')) {
+        cursor.classList.add('is-link');
+      }
+    });
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.closest('a, button, input, select, textarea, [role="button"]')) {
+        cursor.classList.remove('is-link');
+      }
+    });
+
+    /* Ink-drop ripple on click — a small ballpoint dot that blooms and
+       fades, like pressing a pen tip onto paper. */
+    document.addEventListener('click', (e) => {
+      if (reduceMotion) return;
+      const drop = document.createElement('div');
+      drop.className = 'ink-drop';
+      drop.style.left = e.clientX + 'px';
+      drop.style.top = e.clientY + 'px';
+      document.body.appendChild(drop);
+      drop.addEventListener('animationend', () => drop.remove());
+    });
   }
 })();
