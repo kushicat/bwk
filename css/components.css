@@ -92,8 +92,11 @@
   transition: background var(--transition);
 }
 .navbar__inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); }
-.navbar__logo { display: flex; align-items: center; }
-.navbar__logo img { height: 44px; width: auto; }
+.navbar__logo { display: flex; align-items: center; gap: 0.6rem; }
+.navbar__logo img { height: 44px; width: 44px; flex-shrink: 0; }
+.navbar__logo-text { display: flex; flex-direction: column; line-height: 1.05; font-family: var(--font-display); }
+.navbar__logo-text strong { font-size: 1.05rem; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+.navbar__logo-text span { font-size: 0.7rem; font-weight: 700; color: var(--ballpoint); letter-spacing: 0.04em; }
 
 .navbar__links { display: flex; align-items: center; gap: 1.75rem; }
 .navbar__links a {
@@ -242,6 +245,27 @@
 }
 .ebook-card__cover span { display: block; font-family: var(--font-mono); font-size: var(--fs-small); font-weight: 600; opacity: 0.9; margin-top: 0.5rem; text-transform: none; }
 
+/* ----------------------------- COMING SOON CARD ---------------------------
+   Shown in place of Courses/Ebooks grids when their data file is empty.
+   Spans the full grid width via grid-column so it reads as an intentional
+   message, not a half-rendered layout. */
+.coming-soon-card {
+  grid-column: 1 / -1;
+  text-align: center;
+  background: var(--white); border: var(--border-w) dashed var(--ink);
+  border-radius: var(--radius-md); padding: var(--space-xl) var(--space-lg);
+  box-shadow: var(--shadow-sm);
+}
+.coming-soon-card__tag {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  background: var(--exam-yellow); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: var(--radius-sm);
+  padding: 0.25rem 0.7rem; margin-bottom: var(--space-md);
+}
+.coming-soon-card h3 { margin-bottom: 0.5rem; }
+.coming-soon-card p { max-width: 48ch; margin-inline: auto; margin-bottom: var(--space-md); }
+
 /* ----------------------------- RESOURCE CARDS ------------------------------ */
 .resource-card { display: flex; align-items: flex-start; gap: var(--space-md); min-width: 0; }
 .resource-card .card__icon { margin-bottom: 0; flex-shrink: 0; }
@@ -294,6 +318,23 @@
   border-radius: var(--radius-md); padding: clamp(1.5rem, 4vw, var(--space-xl));
   box-shadow: var(--shadow-lg); max-width: 560px;
 }
+/* Wider + no padding so the embedded Google Form's own internal spacing
+   doesn't double up with ours, and it has room to breathe at its natural
+   width instead of looking squeezed. */
+.form-card--embed {
+  max-width: 680px;
+  padding: 0;
+  overflow: hidden;
+}
+.gform-embed {
+  display: block;
+  width: 100%;
+  height: 920px;
+  border: none;
+}
+@media (max-width: 560px) {
+  .gform-embed { height: 1080px; } /* form fields stack taller on narrow screens */
+}
 .form-field { margin-bottom: var(--space-md); text-align: left; }
 .form-field label { display: block; font-family: var(--font-mono); font-size: var(--fs-small); font-weight: 700; margin-bottom: 0.4rem; text-transform: uppercase; }
 .form-field input, .form-field select, .form-field textarea {
@@ -322,9 +363,15 @@
 .faq__a p { padding-bottom: var(--space-md); color: var(--color-text-soft); }
 
 /* --------------------------------- FOOTER ---------------------------------- */
-.footer { background: var(--ink); color: #D9D6CC; padding-block: var(--space-2xl) var(--space-lg); border-top: var(--border-w) solid var(--ink); }
+.footer { background: var(--ink); color: #D9D6CC; padding-block: 0 var(--space-lg); border-top: var(--border-w) solid var(--ink); }
+.footer__poster { width: 100%; border-bottom: var(--border-w) solid var(--exam-yellow); line-height: 0; }
+.footer__poster img { width: 100%; height: auto; display: block; }
+.footer .container { padding-top: var(--space-2xl); }
 .footer__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: var(--space-xl); }
-.footer__brand img { height: 40px; filter: brightness(0) invert(1); margin-bottom: var(--space-md); }
+.footer__logo { display: flex; align-items: center; gap: 0.6rem; margin-bottom: var(--space-md); }
+.footer__logo img { height: 44px; width: 44px; flex-shrink: 0; border-radius: var(--radius-sm); }
+.footer__logo-text strong { color: var(--white); }
+.footer__logo-text span { color: var(--exam-yellow); }
 .footer__brand p { color: #A8A496; max-width: 32ch; }
 .footer h4 { color: var(--exam-yellow); font-size: 0.95rem; margin-bottom: var(--space-md); font-family: var(--font-mono); letter-spacing: 0.04em; text-transform: uppercase; }
 .footer__col a { display: block; padding: 0.35rem 0; color: #D9D6CC; font-size: var(--fs-small); font-weight: 600; transition: color var(--transition); }

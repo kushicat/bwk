@@ -9,6 +9,20 @@ window.BPK = window.BPK || {};
 (function () {
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+  /* Shared "coming soon" empty-state card used by both Courses and Ebooks
+     when their JSON file is an empty array. Styled to match the rest of
+     the site rather than a plain muted sentence, and spans the full grid
+     width so it doesn't look like a half-broken layout. */
+  function comingSoonCard(title, body) {
+    return `
+      <div class="coming-soon-card" data-reveal>
+        <span class="coming-soon-card__tag">Coming Soon</span>
+        <h3>${esc(title)}</h3>
+        <p>${esc(body)}</p>
+        <a class="btn btn--secondary btn--sm" href="#waitlist">Join Waitlist</a>
+      </div>`;
+  }
+
   /* ------------------------------- courses --------------------------------- */
   async function renderCourses() {
     const wrap = document.querySelector('[data-courses]');
@@ -17,7 +31,7 @@ window.BPK = window.BPK || {};
       const res = await fetch('data/courses.json');
       const courses = await res.json();
       if (!courses.length) {
-        wrap.innerHTML = '<p class="text-muted text-center">Courses are being finalized — check back soon.</p>';
+        wrap.innerHTML = comingSoonCard('Courses are cooking', 'New structured programs are in the works — join the waitlist and you\'ll be first to know the moment they\'re ready.');
         return;
       }
       wrap.innerHTML = courses.map(c => `
@@ -47,7 +61,7 @@ window.BPK = window.BPK || {};
       const res = await fetch('data/ebooks.json');
       const ebooks = await res.json();
       if (!ebooks.length) {
-        wrap.innerHTML = '<p class="text-muted text-center">More titles are on the way.</p>';
+        wrap.innerHTML = comingSoonCard('Ebooks are cooking', 'The first titles are being written. Join the waitlist to get them the moment they\'re published.');
         return;
       }
       wrap.innerHTML = ebooks.map(b => `
@@ -79,7 +93,7 @@ window.BPK = window.BPK || {};
       if (statsWrap && data.stats) {
         statsWrap.innerHTML = data.stats.map(s => `
           <div class="stat">
-            <div class="stat__num" data-target="${esc(s.value)}">0</div>
+            <div class="stat__num" data-target="${esc(s.value)}" data-suffix="${esc(s.suffix || '')}">0</div>
             <div class="stat__label">${esc(s.label)}</div>
           </div>
         `).join('');

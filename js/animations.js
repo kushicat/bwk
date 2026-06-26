@@ -46,6 +46,7 @@ window.BPK = window.BPK || {};
      count-up animation when a [data-stats] block scrolls into view. */
   function animateCount(el) {
     const target = parseFloat(el.dataset.target || '0');
+    const suffix = el.dataset.suffix || '';
     const isDecimal = String(el.dataset.target || '').includes('.');
     const duration = reduceMotion ? 0 : 900;
     const start = performance.now();
@@ -53,7 +54,8 @@ window.BPK = window.BPK || {};
       const progress = duration ? Math.min((now - start) / duration, 1) : 1;
       const eased = 1 - Math.pow(1 - progress, 3);
       const value = target * eased;
-      el.textContent = isDecimal ? value.toFixed(1) : Math.round(value).toLocaleString();
+      const display = isDecimal ? value.toFixed(1) : Math.round(value).toLocaleString();
+      el.textContent = progress >= 1 ? display + suffix : display;
       if (progress < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);

@@ -1,10 +1,10 @@
 {
-  "_comment": "Do NOT publish invented testimonials or made-up numbers — this misleads visitors and can violate advertising/consumer-protection rules. Stats below are real zeros until you have real numbers. testimonials is an empty array until you have genuine, permissioned quotes. If you have neither, consider removing the Testimonials section from index.html entirely (see SECTION 8) rather than showing zeros.",
+  "_comment": "Stats below are real, as confirmed by the site owner. testimonials stays an empty array — the 'What students say' section is currently hidden in index.html (see the HTML comment above SECTION 8) until real, permissioned testimonials exist. Un-comment that section and add real quotes here when ready.",
   "stats": [
-    { "value": 0, "label": "Students Reached" },
-    { "value": 0, "label": "Hours of Content" },
-    { "value": 0, "label": "Resources Published" },
-    { "value": 0, "label": "Years Teaching" }
+    { "value": 50, "suffix": "+", "label": "Students Reached" },
+    { "value": 10, "suffix": "+", "label": "Hours of Content" },
+    { "value": 10, "suffix": "+", "label": "Resources Published" },
+    { "value": 6, "suffix": "+", "label": "Years Teaching" }
   ],
   "testimonials": []
 }

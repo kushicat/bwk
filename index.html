@@ -31,7 +31,8 @@
   <meta name="twitter:description" content="Structured preparation for ambitious professionals." />
   <meta name="twitter:image" content="assets/images/og-image.svg" />
 
-  <link rel="icon" type="image/svg+xml" href="assets/logos/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/logos/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/logos/favicon-64.png" />
   <meta name="theme-color" content="#0E0E10" />
 
   <!-- Fonts: Space Grotesk (display), Inter (body), Space Mono (utility/meta) -->
@@ -51,7 +52,7 @@
     "name": "Ballpoint with Kushal",
     "description": "Structured preparation for ambitious professionals — IBA MBA, bank jobs, quantitative aptitude, English, and career skills.",
     "url": "https://example.com/",
-    "logo": "https://example.com/assets/logos/logo-icon.svg",
+    "logo": "https://example.com/assets/logos/logo-icon.png",
     "founder": {
       "@type": "Person",
       "name": "Kushal",
@@ -81,7 +82,8 @@
   <header class="navbar" id="top">
     <nav class="container navbar__inner" aria-label="Primary">
       <a class="navbar__logo" href="index.html" aria-label="Ballpoint with Kushal — home">
-        <img src="assets/logos/logo-full.svg" alt="Ballpoint with Kushal" />
+        <img src="assets/logos/logo-icon.png" alt="" width="44" height="44" />
+        <span class="navbar__logo-text"><strong>BALLPOINT</strong><span>WITH KUSHAL</span></span>
       </a>
 
       <ul class="navbar__links">
@@ -331,8 +333,10 @@
             <div class="video-card__body"><h4>Latest video title</h4><p class="text-muted" style="font-size:var(--fs-small)">Short description of the video.</p></div>
           </article>
           <article class="card video-card" data-reveal data-reveal-delay="1">
-            <div class="video-card__embed"><div class="video-card__placeholder"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
-            <div class="video-card__body"><h4>Popular video title</h4><p class="text-muted" style="font-size:var(--fs-small)">Short description of the video.</p></div>
+            <div class="video-card__embed">
+              <iframe src="https://www.youtube.com/embed/jUjMprQMqVg" title="How I Got Selected as an MTO at a Private Bank" loading="lazy" allowfullscreen></iframe>
+            </div>
+            <div class="video-card__body"><h4>How I Got Selected as an MTO at a Private Bank</h4><p class="text-muted" style="font-size:var(--fs-small)">My complete journey to getting selected as a Management Trainee Officer — the mistakes I made and what actually works for bank job preparation in Bangladesh.</p></div>
           </article>
           <article class="card video-card" data-reveal data-reveal-delay="2">
             <div class="video-card__embed"><div class="video-card__placeholder"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>
@@ -346,19 +350,48 @@
     </section>
 
     <!-- ==================================================================
-         SECTION 8 — TESTIMONIALS + STATS  (rendered from testimonials.json)
-         NOTE: the JSON currently holds PLACEHOLDERS. Replace with REAL quotes
-         and REAL numbers before launch, or remove this section.
+         SECTION 8 — RESULTS (STATS)
+         Stats are real (confirmed by site owner) and rendered from
+         data/testimonials.json -> stats array. Counts up via animations.js
+         when scrolled into view.
+
+         The "What students say" testimonial carousel that used to live
+         here has been intentionally hidden — see the HTML comment block
+         immediately below for how to bring it back. It is NOT deleted,
+         just commented out, so nothing needs to be rebuilt later.
          ================================================================== -->
     <section class="section section--alt" id="testimonials" aria-labelledby="tst-title">
       <div class="container">
-        <div class="stats" data-stats></div>
-
         <div class="section-head section-head--center" data-reveal>
           <span class="eyebrow">Results</span>
-          <h2 id="tst-title">What students say</h2>
+          <h2 id="tst-title">The Numbers So Far</h2>
         </div>
+        <div class="stats" data-stats></div>
+      </div>
+    </section>
 
+    <!-- ==================================================================
+         REVIVAL NOTE — "What students say" testimonial carousel
+         ------------------------------------------------------------------
+         Hidden as of June 2026 until there are real, permissioned
+         testimonials to show (see the _comment in data/testimonials.json
+         — publishing invented quotes is misleading and was flagged
+         earlier as something to avoid).
+
+         TO BRING THIS BACK:
+         1. Add real testimonials to the "testimonials" array in
+            data/testimonials.json, e.g.:
+              { "name": "...", "role": "...", "quote": "..." }
+         2. Delete this comment's opening marker above and the closing
+            marker right before SECTION 9, to un-comment the block below.
+         3. That's it — main.js and forms.js already know how to render
+            and wire up the carousel; nothing else needs to change.
+
+    <section class="section section--alt" aria-labelledby="tst-title-2">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <h2 id="tst-title-2">What students say</h2>
+        </div>
         <div class="carousel" tabindex="0" aria-roledescription="carousel" aria-label="Student testimonials">
           <div class="carousel__track" data-testimonials></div>
           <div class="carousel__controls">
@@ -369,6 +402,7 @@
         </div>
       </div>
     </section>
+    -->
 
     <!-- ==================================================================
          SECTION 9 — NEWSLETTER / WAITLIST
@@ -381,32 +415,21 @@
           <p>Get launch updates, early access, and free resources straight to your inbox.</p>
         </div>
 
-        <div class="form-card mx-auto" data-reveal>
-          <form data-form action="#" method="post" novalidate>
-            <div class="form-field">
-              <label for="wl-name">Full name</label>
-              <input id="wl-name" name="name" type="text" placeholder="Your name" required autocomplete="name" />
-            </div>
-            <div class="form-field">
-              <label for="wl-email">Email address</label>
-              <input id="wl-email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" />
-            </div>
-            <div class="form-field">
-              <label for="wl-exam">Target exam</label>
-              <select id="wl-exam" name="target_exam" required>
-                <option value="" disabled selected>Select your goal</option>
-                <option>IBA MBA</option>
-                <option>Bank Job</option>
-                <option>Government / BCS</option>
-                <option>English Improvement</option>
-                <option>Quantitative Aptitude</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <button class="btn btn--primary btn--full" type="submit">Join Waitlist</button>
-            <p class="form-note">No spam. Unsubscribe anytime. Your details are only used to send updates.</p>
-          </form>
-          <div class="form-success mt-md">✓ You're on the list! Check your inbox soon.</div>
+        <div class="form-card form-card--embed mx-auto" data-reveal>
+          <!-- This is the real, live Google Form — submissions actually
+               arrive in your Google Sheet/responses. Google Forms can't
+               be restyled to match the site's neobrutalist look (no CSS
+               access inside the iframe), so this card frame exists to at
+               least give it a bordered, on-brand container. If you ever
+               want the form's own look-and-feel to change, edit it at
+               https://forms.gle/URoY76LWg1quVmiu6 — anything you change
+               there (fields, text, options) updates here automatically,
+               no code edit needed. -->
+          <iframe
+            class="gform-embed"
+            src="https://docs.google.com/forms/d/e/1FAIpQLSeefVOcjDYRGt6S8_hWz9qhia_syLVfiWj47wy4l8Yt_O4XeA/viewform?embedded=true"
+            title="Join the Ballpoint with Kushal waitlist"
+            loading="lazy">Loading…</iframe>
         </div>
       </div>
     </section>
@@ -495,10 +518,16 @@
        SECTION 12 — FOOTER
        ==================================================================== -->
   <footer class="footer" aria-label="Footer">
+    <div class="footer__poster">
+      <img src="assets/images/footer-poster.jpg" alt="Ballpoint with Kushal — brand artwork" loading="lazy" />
+    </div>
     <div class="container">
       <div class="footer__grid">
         <div class="footer__brand">
-          <img src="assets/logos/logo-full.svg" alt="Ballpoint with Kushal" />
+          <div class="footer__logo">
+            <img src="assets/logos/logo-icon.png" alt="" width="44" height="44" />
+            <span class="navbar__logo-text footer__logo-text"><strong>BALLPOINT</strong><span>WITH KUSHAL</span></span>
+          </div>
           <p>Structured preparation for ambitious professionals — Quant, English, career skills, and competitive-exam strategy.</p>
           <div class="footer__socials">
             <a href="https://www.facebook.com/theffkushal/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v7h3v-7h2.5l.5-3H14V9z"/></svg></a>
@@ -528,6 +557,7 @@
           <a href="#" aria-disabled="true">Mock Tests</a>
           <a href="#" aria-disabled="true">Vocabulary</a>
           <a href="#" aria-disabled="true">Student Dashboard</a>
+          <a href="#" aria-disabled="true">Student Testimonials</a>
         </div>
       </div>
 
