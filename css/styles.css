@@ -175,72 +175,54 @@ p  { color: var(--color-text-soft); }
 
 .lead { font-size: var(--fs-lead); color: var(--color-text-soft); }
 
-/* "Gradient text" helper retired in favour of an animated ballpoint
-   highlight mark — the yellow sweeps in left-to-right like a highlighter.
-   IMPORTANT: this no longer fires on a fixed page-load timer (that raced
-   against the parent [data-reveal] element's own fade-in and could finish
-   invisibly before the parent ever became visible). Instead it starts
-   at 0% and only animates once animations.js adds .is-revealed to it —
-   the same scroll-triggered mechanism used for everything else. */
+/* "Gradient text" helper: a halftone-textured yellow highlight behind the
+   text, animated in with a left-to-right sweep on scroll-into-view.
+
+   IMPORTANT — why this is built the way it is: the highlighted phrase can
+   wrap across two lines (e.g. "Ambitious Professionals" breaking after
+   "Ambitious" at narrower widths). Two earlier versions broke on exactly
+   this:
+     1. Absolutely positioned ::before/::after pseudo-elements with a
+        hand-drawn clip-path polygon — a pseudo-element on an inline span
+        only sizes itself to ONE line box, so on wrap the highlight
+        rendered as a thin distorted sliver instead of covering both
+        lines (the bug seen in production).
+     2. clip-path + box-decoration-break: clone — technically correct per
+        spec (clip-path IS one of the properties box-decoration-break
+        re-applies per fragment), but combining clip-path animation with
+        box-decoration-break on inline elements has a history of patchy,
+        inconsistent browser support, which isn't worth the risk here.
+
+   Fixed with the well-established, broadly-supported technique instead:
+   box-decoration-break: clone handles the BACKGROUND, BORDER, and
+   BORDER-RADIUS independently per line (this part has solid support —
+   it's the basic, original use case the property was designed for). The
+   sweep-in animation itself is done with background-size (0% -> 100%),
+   not clip-path — animating background-size on a cloned background is
+   the standard pattern for this exact effect and avoids stacking two
+   less-common features together. */
 .text-gradient {
   position: relative;
   color: var(--ink);
-  padding: 0.05em 0.2em 0.1em;
-  z-index: 0;
+  padding: 0.05em 0.25em 0.12em;
+  margin: 0 -0.1em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  border-radius: 0.15em;
+  box-shadow: 0 0 0 1.5px var(--ink);
+  background-repeat: no-repeat, repeat;
+  background-image:
+    linear-gradient(var(--exam-yellow), var(--exam-yellow)),
+    radial-gradient(circle, rgba(14,14,16,0.45) 0.55px, transparent 0.6px);
+  background-size: 0% 100%, 3px 3px;
+  background-position: left center, left center;
+  transition: background-size 0.6s ease-out;
 }
-/* The highlight is built from two stacked layers, both 100% CSS, with NO
-   SVG internal cross-references (no <use>, no filter/url(#id) lookups).
-   That cross-reference pattern was the actual bug in the previous
-   version: Chrome dropped support for <use href="#id"> when the SVG is
-   embedded as a CSS background-image data URI (changed Dec 2023), so the
-   whole highlight layer silently failed to render anything at all.
-
-   Layer 1 (::before): a flat yellow fill, clipped to a wobbly hand-drawn
-   marker shape — guaranteed to render, no cross-refs.
-   Layer 2 (::after): a halftone dot pattern on top of that same wobbly
-   shape, built from a tiled radial-gradient (also no cross-refs) — a
-   genuine dot texture matching the brand's halftone art, not flat colour.
-
-   Both layers share one clip-path that animates from a near-zero-width
-   sliver of the shape to the full shape, which is what produces the
-   left-to-right "highlighter sweep" — the wobble and the sweep are the
-   same animation, not two separate effects layered on top of each other. */
-.text-gradient::before,
-.text-gradient::after {
-  content: "";
-  position: absolute;
-  left: -0.05em; right: -0.05em; top: 0.08em; bottom: 0.02em;
-  clip-path: polygon(
-    1% 18%, 1.5% 8%, 3% 4%, 4% 2%, 4% 10%, 4% 28%,
-    4% 50%, 4% 72%, 4% 90%, 4% 97%, 3% 98%, 1.5% 92%,
-    1% 75%, 1% 50%
-  );
-  transition: clip-path 0.7s ease-out;
-}
-.text-gradient::before { z-index: -2; background: var(--exam-yellow); }
-.text-gradient::after {
-  z-index: -1;
-  background-image: radial-gradient(circle, rgba(14,14,16,0.45) 0.55px, transparent 0.6px);
-  background-size: 3px 3px;
-  transition-delay: 0.05s;
-}
-.text-gradient.is-revealed::before,
-.text-gradient.is-revealed::after {
-  clip-path: polygon(
-    1% 18%, 4% 8%, 10% 4%, 96% 2%, 99% 10%, 98% 28%,
-    100% 50%, 98% 72%, 99% 90%, 94% 97%, 8% 98%, 2% 92%,
-    1% 75%, 3% 50%
-  );
+.text-gradient.is-revealed {
+  background-size: 100% 100%, 3px 3px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .text-gradient::before, .text-gradient::after {
-    transition: none;
-    clip-path: polygon(
-      1% 18%, 4% 8%, 10% 4%, 96% 2%, 99% 10%, 98% 28%,
-      100% 50%, 98% 72%, 99% 90%, 94% 97%, 8% 98%, 2% 92%,
-      1% 75%, 3% 50%
-    );
-  }
+  .text-gradient { transition: none; background-size: 100% 100%, 3px 3px; }
 }
 
 /* Monospace utility for stats, meta tags, question counters */
