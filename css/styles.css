@@ -188,30 +188,59 @@ p  { color: var(--color-text-soft); }
   padding: 0.05em 0.2em 0.1em;
   z-index: 0;
 }
-/* The highlight itself is a separate ::before layer rather than a flat
-   background-color, for two reasons: (1) an SVG marker-stroke shape gives
-   it a wobbly hand-drawn edge instead of a perfect rectangle, and (2) a
-   feTurbulence-based grain filter inside that same SVG gives it real
-   surface texture, like ink soaking unevenly into paper, instead of a
-   flat digital block of colour. Both are baked into one inline SVG data
-   URI so there's no extra image request. */
-.text-gradient::before {
+/* The highlight is built from two stacked layers, both 100% CSS, with NO
+   SVG internal cross-references (no <use>, no filter/url(#id) lookups).
+   That cross-reference pattern was the actual bug in the previous
+   version: Chrome dropped support for <use href="#id"> when the SVG is
+   embedded as a CSS background-image data URI (changed Dec 2023), so the
+   whole highlight layer silently failed to render anything at all.
+
+   Layer 1 (::before): a flat yellow fill, clipped to a wobbly hand-drawn
+   marker shape — guaranteed to render, no cross-refs.
+   Layer 2 (::after): a halftone dot pattern on top of that same wobbly
+   shape, built from a tiled radial-gradient (also no cross-refs) — a
+   genuine dot texture matching the brand's halftone art, not flat colour.
+
+   Both layers share one clip-path that animates from a near-zero-width
+   sliver of the shape to the full shape, which is what produces the
+   left-to-right "highlighter sweep" — the wobble and the sweep are the
+   same animation, not two separate effects layered on top of each other. */
+.text-gradient::before,
+.text-gradient::after {
   content: "";
   position: absolute;
   left: -0.05em; right: -0.05em; top: 0.08em; bottom: 0.02em;
-  z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 60' preserveAspectRatio='none'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.7 0.7 0.7 0 -0.65'/%3E%3CfeComposite operator='in' in2='SourceGraphic'/%3E%3C/filter%3E%3Cpath id='p' d='M3,11 C2,7 6,4 14,4 L388,3 C395,3 398,8 397,16 L396,46 C397,53 392,57 384,56 L12,57 C5,57 2,53 3,46 Z' fill='%23FFD23F'/%3E%3Cuse href='%23p' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-position: left center;
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.6s ease-out;
+  clip-path: polygon(
+    1% 18%, 1.5% 8%, 3% 4%, 4% 2%, 4% 10%, 4% 28%,
+    4% 50%, 4% 72%, 4% 90%, 4% 97%, 3% 98%, 1.5% 92%,
+    1% 75%, 1% 50%
+  );
+  transition: clip-path 0.7s ease-out;
 }
-.text-gradient.is-revealed::before {
-  clip-path: inset(0 0 0 0);
+.text-gradient::before { z-index: -2; background: var(--exam-yellow); }
+.text-gradient::after {
+  z-index: -1;
+  background-image: radial-gradient(circle, rgba(14,14,16,0.45) 0.55px, transparent 0.6px);
+  background-size: 3px 3px;
+  transition-delay: 0.05s;
+}
+.text-gradient.is-revealed::before,
+.text-gradient.is-revealed::after {
+  clip-path: polygon(
+    1% 18%, 4% 8%, 10% 4%, 96% 2%, 99% 10%, 98% 28%,
+    100% 50%, 98% 72%, 99% 90%, 94% 97%, 8% 98%, 2% 92%,
+    1% 75%, 3% 50%
+  );
 }
 @media (prefers-reduced-motion: reduce) {
-  .text-gradient::before { transition: none; clip-path: inset(0 0 0 0); }
+  .text-gradient::before, .text-gradient::after {
+    transition: none;
+    clip-path: polygon(
+      1% 18%, 4% 8%, 10% 4%, 96% 2%, 99% 10%, 98% 28%,
+      100% 50%, 98% 72%, 99% 90%, 94% 97%, 8% 98%, 2% 92%,
+      1% 75%, 3% 50%
+    );
+  }
 }
 
 /* Monospace utility for stats, meta tags, question counters */

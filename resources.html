@@ -20,6 +20,17 @@
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/utilities.css" />
   <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/dark-mode.css" />
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('bwk-theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="css/library.css" />
 </head>
 
@@ -43,6 +54,10 @@
         <li><a href="contact.html">Contact</a></li>
       </ul>
       <div class="navbar__actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
         <a class="btn btn--primary btn--sm" href="index.html#waitlist">Join Waitlist</a>
       </div>
       <button class="hamburger" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
@@ -52,6 +67,10 @@
   </header>
 
   <div class="mobile-drawer" id="mobileDrawer">
+    <button class="theme-toggle theme-toggle--mobile" id="themeToggleMobile" aria-label="Toggle dark mode">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
     <a href="about.html">About</a>
     <a href="courses.html">Courses</a>
     <a href="ebooks.html">Ebooks</a>
@@ -150,6 +169,7 @@
     </div>
   </footer>
 
+  <script src="js/theme.js" defer></script>
   <script src="js/navigation.js" defer></script>
   <script src="js/animations.js" defer></script>
   <script src="js/library.js" defer></script>

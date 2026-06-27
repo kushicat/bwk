@@ -1,5 +1,6 @@
 [
   {
+    "_comment": "HOW TO ADD A NEW RESOURCE: 1) Upload your finished tool's .html file to the repo root (same folder as index.html). 2) Add one object here with that exact filename in 'file'. Schema: tag (short label), cats (array of any category strings — filter pills on resources.html build themselves from whatever appears here), title, desc, meta (e.g. '287 questions · 16 chapters'), file. For a tool that isn't built yet, omit 'file' and add \"soon\": true instead — it'll show as a placeholder card and won't appear in the homepage preview.",
     "tag": "Vocabulary",
     "cats": ["Vocabulary", "MCQ"],
     "title": "Essential 333 — Vocabulary Drill",

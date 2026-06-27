@@ -18,6 +18,7 @@
   .scroll-rule { right: 14px; }
 }
 @media (max-width: 768px) {
+  .blog-cta__inner { flex-direction: column; text-align: center; }
   .hamburger { display: flex; }
   .navbar__links,
   .navbar__actions { display: none; }

@@ -158,9 +158,41 @@ window.BPK = window.BPK || {};
     }
   }
 
+  /* ------------------------- resources preview ------------------------------
+     Homepage teaser for the Resource Library. Pulls real entries straight
+     from data/resources.json — the same file the full library on
+     resources.html uses — so this can never drift into showing fake
+     placeholder cards again. Only shows resources that are actually built
+     (skips anything marked "soon": true), capped at 3 for the teaser. */
+  async function renderResourcesPreview() {
+    const wrap = document.querySelector('[data-resources-preview]');
+    if (!wrap) return;
+    try {
+      const res = await fetch('data/resources.json');
+      const resources = await res.json();
+      const real = resources.filter(r => !r.soon && r.file).slice(0, 3);
+      if (!real.length) {
+        wrap.innerHTML = comingSoonCard('Resources are cooking', 'The first tools are being built — check the full library or join the waitlist to hear the moment one is ready.');
+        BPK.observeReveals && BPK.observeReveals(wrap);
+        return;
+      }
+      wrap.innerHTML = real.map(r => `
+        <a class="card resource-card" href="${esc(r.file)}" target="_blank" rel="noopener" data-reveal>
+          <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></div>
+          <div><h3>${esc(r.title)}</h3><p>${esc(r.desc || '')}</p></div>
+        </a>
+      `).join('');
+      BPK.observeReveals && BPK.observeReveals(wrap);
+    } catch (err) {
+      console.error('Could not load data/resources.json', err);
+      wrap.innerHTML = '<p class="text-muted text-center">Couldn\'t load resources right now.</p>';
+    }
+  }
+
   renderCourses();
   renderEbooks();
   renderTestimonials();
   renderQuote();
+  renderResourcesPreview();
   wireYear();
 })();
