@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="postTitleTag">Post — Ballpoint with Kushal</title>
+  <meta name="theme-color" content="#0E0E10" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/logos/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/logos/favicon-64.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/blog.css" />
+
+  <!-- Markdown renderer, loaded from cdnjs (this is a normal browser-side
+       script load — unrelated to any sandbox/tool restrictions on the
+       authoring side). If you ever need to swap CDNs, this is the only
+       line that needs to change. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="bg-grid" aria-hidden="true" id="bgGrid"></div>
+
+  <header class="navbar" id="top">
+    <nav class="container navbar__inner" aria-label="Primary">
+      <a class="navbar__logo" href="index.html" aria-label="Ballpoint with Kushal — home">
+        <img src="assets/logos/logo-icon.png" alt="" width="44" height="44" />
+        <span class="navbar__logo-text"><strong>BALLPOINT</strong><span>WITH KUSHAL</span></span>
+      </a>
+      <ul class="navbar__links">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#courses">Courses</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <div class="navbar__actions">
+        <a class="btn btn--primary btn--sm" href="index.html#waitlist">Join Waitlist</a>
+      </div>
+      <button class="hamburger" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <div class="mobile-drawer" id="mobileDrawer">
+    <a href="index.html#about">About</a>
+    <a href="index.html#courses">Courses</a>
+    <a href="resources.html">Resources</a>
+    <a href="blog.html">Blog</a>
+    <a href="index.html#faq">FAQ</a>
+    <a href="index.html#contact">Contact</a>
+    <a class="btn btn--primary btn--full mt-sm" href="index.html#waitlist">Join Waitlist</a>
+  </div>
+
+  <main id="main">
+    <article class="section post" aria-labelledby="postTitle">
+      <div class="container post__container">
+        <a class="post__back" href="blog.html">&larr; Back to Blog</a>
+
+        <div id="postLoading" class="post__loading">Loading post…</div>
+        <div id="postError" class="post__error" hidden>
+          Couldn't find that post. <a href="blog.html">Back to the blog</a>.
+        </div>
+
+        <div id="postContent" hidden>
+          <span class="eyebrow" id="postEyebrow">Blog</span>
+          <h1 id="postTitle"></h1>
+          <div class="post__meta">
+            <span id="postDate"></span>
+            <span id="postTags"></span>
+          </div>
+          <div class="post__body" id="postBody"></div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer" aria-label="Footer">
+    <div class="footer__poster">
+      <img src="assets/images/footer-poster.jpg" alt="Ballpoint with Kushal — brand artwork" loading="lazy" />
+    </div>
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <div class="footer__logo">
+            <img src="assets/logos/logo-icon.png" alt="" width="44" height="44" />
+            <span class="navbar__logo-text footer__logo-text"><strong>BALLPOINT</strong><span>WITH KUSHAL</span></span>
+          </div>
+          <p>Structured preparation for ambitious professionals — Quant, English, career skills, and competitive-exam strategy.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Learn</h4>
+          <a href="index.html#courses">Courses</a>
+          <a href="resources.html">Free Resources</a>
+          <a href="blog.html">Blog</a>
+        </div>
+        <div class="footer__col">
+          <h4>Brand</h4>
+          <a href="index.html#about">About</a>
+          <a href="index.html#contact">Contact</a>
+          <a href="index.html#waitlist">Join Waitlist</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span data-year>2026</span> Ballpoint with Kushal. All rights reserved.</span>
+        <span>Made for ambitious learners in Bangladesh 🇧🇩</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/navigation.js" defer></script>
+  <script src="js/animations.js" defer></script>
+  <script src="js/post.js" defer></script>
+</body>
+</html>

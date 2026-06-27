@@ -38,7 +38,7 @@
   <!-- Fonts: Space Grotesk (display), Inter (body), Space Mono (utility/meta) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/components.css" />
@@ -91,6 +91,7 @@
         <li><a href="#courses">Courses</a></li>
         <li><a href="#ebooks">Ebooks</a></li>
         <li><a href="#resources">Resources</a></li>
+        <li><a href="blog.html">Blog</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -111,6 +112,7 @@
     <a href="#courses">Courses</a>
     <a href="#ebooks">Ebooks</a>
     <a href="#resources">Resources</a>
+    <a href="blog.html">Blog</a>
     <a href="#faq">FAQ</a>
     <a href="#contact">Contact</a>
     <a class="btn btn--primary btn--full mt-sm" href="#waitlist">Join Waitlist</a>
@@ -198,6 +200,27 @@
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Results — built around real exam outcomes</li>
             </ul>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         SECTION 2.5 — QUOTE
+         Deliberately spacious and quiet compared to the sections around
+         it — generous whitespace, one big textured quote mark behind the
+         text, no buttons or CTAs. To swap the quote, just edit the <p>
+         and <cite> below.
+         ================================================================== -->
+    <section class="section quote-section" aria-label="Quote">
+      <div class="container">
+        <div class="quote-block" data-reveal id="quoteBlock">
+          <svg class="quote-block__mark" viewBox="0 0 100 100" aria-hidden="true">
+            <filter id="paperGrain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.9 0.9 0.9 0 -0.82"/><feComposite operator="in" in2="SourceGraphic"/></filter>
+            <text x="0" y="78" font-family="Georgia, serif" font-size="110">"</text>
+            <text x="0" y="78" font-family="Georgia, serif" font-size="110" filter="url(#paperGrain)" opacity="0.5">"</text>
+          </svg>
+          <p class="quote-block__text" id="quoteText">We suffer more in imagination than in reality.</p>
+          <cite class="quote-block__cite" id="quoteCite">— Seneca</cite>
         </div>
       </div>
     </section>
@@ -444,29 +467,29 @@
           <h2 id="faq-title">Frequently Asked Questions</h2>
         </div>
 
-        <div class="faq" data-reveal>
-          <div class="faq__item">
+        <div class="faq">
+          <div class="faq__item" data-reveal>
             <button class="faq__q" aria-expanded="false">
               <span>Who is this platform for?</span>
               <svg class="faq__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             </button>
             <div class="faq__a"><p>Ambitious professionals and students in Bangladesh (roughly 22–35) preparing for IBA MBA admission, bank jobs, government exams, or sharpening Quant, English, and career skills.</p></div>
           </div>
-          <div class="faq__item">
+          <div class="faq__item" data-reveal data-reveal-delay="1">
             <button class="faq__q" aria-expanded="false">
               <span>Are the courses live yet?</span>
               <svg class="faq__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             </button>
             <div class="faq__a"><p>Courses are launching soon. Join the waitlist to get early access and launch pricing before they open to everyone.</p></div>
           </div>
-          <div class="faq__item">
+          <div class="faq__item" data-reveal data-reveal-delay="2">
             <button class="faq__q" aria-expanded="false">
               <span>Is there free material?</span>
               <svg class="faq__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             </button>
             <div class="faq__a"><p>Yes. The Free Resources section has formula sheets, vocabulary lists, mock tests, and study guides — plus regular free lessons on YouTube.</p></div>
           </div>
-          <div class="faq__item">
+          <div class="faq__item" data-reveal data-reveal-delay="3">
             <button class="faq__q" aria-expanded="false">
               <span>What makes this different from other prep?</span>
               <svg class="faq__icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
@@ -542,6 +565,7 @@
           <a href="courses.html">Courses</a>
           <a href="ebooks.html">Ebooks</a>
           <a href="resources.html">Free Resources</a>
+          <a href="blog.html">Blog</a>
           <a href="index.html#youtube">YouTube</a>
         </div>
         <div class="footer__col">
@@ -553,7 +577,6 @@
         </div>
         <div class="footer__col">
           <h4>Coming soon</h4>
-          <a href="#" aria-disabled="true">Blog</a>
           <a href="#" aria-disabled="true">Mock Tests</a>
           <a href="#" aria-disabled="true">Vocabulary</a>
           <a href="#" aria-disabled="true">Student Dashboard</a>

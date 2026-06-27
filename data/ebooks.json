@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "_comment": "Add/remove ebook objects here. 'cover' is optional — omit it and the card falls back to a plain colour block with the title. 'link' can be a Google Drive share link (use the /preview format for a clean inline viewer in a new tab) or any direct file URL.",
+    "title": "Essential 333",
+    "meta": "Story-based vocabulary",
+    "description": "A new, efficient way to learn Barron's 333 words — through story and real implementation, not rote memorization.",
+    "link": "https://drive.google.com/file/d/1WaejGDG3Qyh9FlWp-CUoO3gAQrtJCu1l/preview",
+    "cta": "Read the Ebook"
+  }
+]

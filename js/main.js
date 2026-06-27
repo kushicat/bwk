@@ -32,6 +32,7 @@ window.BPK = window.BPK || {};
       const courses = await res.json();
       if (!courses.length) {
         wrap.innerHTML = comingSoonCard('Courses are cooking', 'New structured programs are in the works — join the waitlist and you\'ll be first to know the moment they\'re ready.');
+        BPK.observeReveals && BPK.observeReveals(wrap);
         return;
       }
       wrap.innerHTML = courses.map(c => `
@@ -51,6 +52,7 @@ window.BPK = window.BPK || {};
       console.error('Could not load data/courses.json', err);
       wrap.innerHTML = '<p class="text-muted text-center">Couldn\'t load courses right now.</p>';
     }
+    BPK.observeReveals && BPK.observeReveals(wrap);
   }
 
   /* -------------------------------- ebooks ---------------------------------- */
@@ -62,20 +64,24 @@ window.BPK = window.BPK || {};
       const ebooks = await res.json();
       if (!ebooks.length) {
         wrap.innerHTML = comingSoonCard('Ebooks are cooking', 'The first titles are being written. Join the waitlist to get them the moment they\'re published.');
+        BPK.observeReveals && BPK.observeReveals(wrap);
         return;
       }
       wrap.innerHTML = ebooks.map(b => `
         <article class="card ebook-card" data-reveal>
-          <div class="ebook-card__cover">${esc(b.title)}<span>${esc(b.meta || '')}</span></div>
+          ${b.cover
+            ? `<div class="ebook-card__cover ebook-card__cover--img"><img src="${esc(b.cover)}" alt="${esc(b.title)} cover" loading="lazy" /></div>`
+            : `<div class="ebook-card__cover">${esc(b.title)}<span>${esc(b.meta || '')}</span></div>`}
           <h3>${esc(b.title)}</h3>
           <p class="text-muted" style="font-size:var(--fs-small)">${esc(b.description || '')}</p>
-          <a class="btn btn--secondary btn--sm" href="${esc(b.link || '#')}">${esc(b.cta || 'View')}</a>
+          <a class="btn btn--secondary btn--sm" href="${esc(b.link || '#')}" ${b.link && b.link.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}>${esc(b.cta || 'View')}</a>
         </article>
       `).join('');
     } catch (err) {
       console.error('Could not load data/ebooks.json', err);
       wrap.innerHTML = '<p class="text-muted text-center">Couldn\'t load ebooks right now.</p>';
     }
+    BPK.observeReveals && BPK.observeReveals(wrap);
   }
 
   /* ----------------------------- testimonials -------------------------------
@@ -91,12 +97,14 @@ window.BPK = window.BPK || {};
       const data = await res.json();
 
       if (statsWrap && data.stats) {
-        statsWrap.innerHTML = data.stats.map(s => `
-          <div class="stat">
+        statsWrap.innerHTML = data.stats.map((s, i) => `
+          <div class="stat" data-reveal data-reveal-delay="${i % 3 === 0 ? '' : i % 3}">
             <div class="stat__num" data-target="${esc(s.value)}" data-suffix="${esc(s.suffix || '')}">0</div>
             <div class="stat__label">${esc(s.label)}</div>
           </div>
         `).join('');
+        BPK.observeReveals && BPK.observeReveals(statsWrap);
+        BPK.statsDataReady && BPK.statsDataReady();
       }
 
       if (trackWrap && data.testimonials) {
@@ -127,8 +135,32 @@ window.BPK = window.BPK || {};
     if (yr) yr.textContent = new Date().getFullYear();
   }
 
+  /* ------------------------------- quote ------------------------------------
+     Picks ONE quote at random from data/quotes.json every time the page
+     loads, and swaps it into the static fallback text already in the HTML
+     (so something sensible still shows even if this fetch fails). Add a
+     new quote any time by adding one object to quotes.json — no HTML/JS
+     changes needed. */
+  async function renderQuote() {
+    const textEl = document.getElementById('quoteText');
+    const citeEl = document.getElementById('quoteCite');
+    if (!textEl || !citeEl) return;
+    try {
+      const res = await fetch('data/quotes.json');
+      const quotes = await res.json();
+      if (!quotes.length) return; // keep the static fallback already in the HTML
+      const pick = quotes[Math.floor(Math.random() * quotes.length)];
+      textEl.textContent = pick.text;
+      citeEl.textContent = '— ' + (pick.author || 'Unknown');
+    } catch (err) {
+      console.error('Could not load data/quotes.json', err);
+      // static fallback text already in the HTML stays as-is
+    }
+  }
+
   renderCourses();
   renderEbooks();
   renderTestimonials();
+  renderQuote();
   wireYear();
 })();

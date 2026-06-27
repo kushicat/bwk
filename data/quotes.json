@@ -1,0 +1,31 @@
+[
+  {
+    "_comment": "Add or remove quotes freely. One is picked at random each time the page loads. No HTML/JS changes needed to add a quote — just add an object here. The set below is a starter — swap in your own picks any time.",
+    "text": "We suffer more in imagination than in reality.",
+    "author": "Seneca"
+  },
+  {
+    "text": "Discipline is the bridge between goals and accomplishment.",
+    "author": "Jim Rohn"
+  },
+  {
+    "text": "Success is the sum of small efforts, repeated day in and day out.",
+    "author": "Robert Collier"
+  },
+  {
+    "text": "The expert in anything was once a beginner.",
+    "author": "Helen Hayes"
+  },
+  {
+    "text": "It does not matter how slowly you go as long as you do not stop.",
+    "author": "Confucius"
+  },
+  {
+    "text": "What we learn with pleasure we never forget.",
+    "author": "Alfred Mercier"
+  },
+  {
+    "text": "The journey of a thousand miles begins with one step.",
+    "author": "Lao Tzu"
+  }
+]

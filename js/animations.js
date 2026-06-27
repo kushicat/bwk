@@ -10,34 +10,76 @@ window.BPK = window.BPK || {};
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------- scroll reveal for [data-reveal] ------------------
-     Also automatically watches every .eyebrow tag (the small yellow pills)
-     and .text-gradient (the animated highlighter marks) so they get their
-     pop-in / sweep-in animation without needing data-reveal added by hand
-     to each one in the HTML. */
-  const revealEls = document.querySelectorAll('[data-reveal], .eyebrow, .text-gradient, .scribble-wrap');
-  if (revealEls.length) {
-    if (reduceMotion) {
-      revealEls.forEach(el => el.classList.add('is-revealed'));
-    } else {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const el = entry.target;
-            if (el.classList.contains('text-gradient')) {
-              /* Let the parent's own fade/translate transition start first,
-                 then sweep the highlight in shortly after — looks like the
-                 highlighter is marking text that has already appeared,
-                 rather than racing it. */
-              setTimeout(() => el.classList.add('is-revealed'), 350);
-            } else {
-              el.classList.add('is-revealed');
-            }
-            io.unobserve(el);
+     Also automatically watches every .eyebrow tag (the small yellow pills),
+     .text-gradient (the animated highlighter marks), and .scribble-wrap
+     (hand-drawn circles) so they get their animations without needing
+     data-reveal added by hand to each one in the HTML.
+
+     IMPORTANT FIX: this used to run ONCE at page load and only ever see
+     elements already in the static HTML. But main.js renders Courses,
+     Ebooks, Stats, and Testimonials asynchronously via fetch() — those
+     elements don't exist yet at the moment this script first runs, so
+     they were never observed and stayed invisible (opacity: 0) forever,
+     with nothing ever adding .is-revealed to them. Fixed two ways:
+       1. observeReveals() is now a function, exposed on BPK, that main.js
+          calls after each async render finishes.
+       2. A MutationObserver also watches the whole document for any
+          newly-added [data-reveal]/.eyebrow/etc. and auto-observes them,
+          as a safety net against this same bug recurring if new dynamic
+          content is added later without remembering to call the hook. */
+  const io = reduceMotion ? null : new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        if (el.classList.contains('text-gradient')) {
+          /* Let the parent's own fade/translate transition start first,
+             then sweep the highlight in shortly after — looks like the
+             highlighter is marking text that has already appeared,
+             rather than racing it. */
+          setTimeout(() => el.classList.add('is-revealed'), 350);
+        } else {
+          el.classList.add('is-revealed');
+        }
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  function observeReveals(root = document) {
+    const els = root.querySelectorAll
+      ? root.querySelectorAll('[data-reveal], .eyebrow, .text-gradient, .scribble-wrap')
+      : [];
+    els.forEach(el => {
+      if (el.dataset.revealBound) return; // never double-observe the same element
+      el.dataset.revealBound = '1';
+      if (reduceMotion) {
+        el.classList.add('is-revealed');
+      } else {
+        io.observe(el);
+      }
+    });
+  }
+  BPK.observeReveals = observeReveals;
+
+  observeReveals(document);
+
+  /* Safety net: catch any future dynamically-injected reveal elements
+     automatically, so no one has to remember to call observeReveals()
+     by hand every time new content is added to the page. */
+  if (!reduceMotion && 'MutationObserver' in window) {
+    const mo = new MutationObserver((mutations) => {
+      mutations.forEach(m => {
+        m.addedNodes.forEach(node => {
+          if (node.nodeType !== 1) return; // only element nodes
+          if (node.matches && node.matches('[data-reveal], .eyebrow, .text-gradient, .scribble-wrap')) {
+            observeReveals(node.parentElement || document);
+          } else if (node.querySelectorAll) {
+            observeReveals(node);
           }
         });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-      revealEls.forEach(el => io.observe(el));
-    }
+      });
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
   }
 
   /* ---------------------- animated stat counters ---------------------------
@@ -56,18 +98,48 @@ window.BPK = window.BPK || {};
       const value = target * eased;
       const display = isDecimal ? value.toFixed(1) : Math.round(value).toLocaleString();
       el.textContent = progress >= 1 ? display + suffix : display;
-      if (progress < 1) requestAnimationFrame(step);
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else if (!reduceMotion) {
+        /* Small landing punch once the count finishes, so it feels like
+           it "arrives" rather than just stopping. */
+        el.classList.add('stat__num--landed');
+        setTimeout(() => el.classList.remove('stat__num--landed'), 350);
+      }
     }
     requestAnimationFrame(step);
   }
   BPK.animateCount = animateCount;
 
+  /* FIX: previously this observed the (initially empty) [data-stats]
+     wrapper once at page load and, the first time it scrolled into view,
+     immediately looked for .stat__num children and gave up permanently
+     (unobserve) even if main.js's fetch() hadn't injected them yet — a
+     race condition where whether the counter ever animated depended on
+     network timing. Now: track "has scrolled into view" and "has data
+     loaded" as two independent flags: whichever happens second triggers
+     the count-up animation, and it can only fire once. */
   const statsBlock = document.querySelector('[data-stats]');
+  let statsInView = false;
+  let statsDataReady = false;
+  let statsAnimated = false;
+
+  function tryAnimateStats() {
+    if (statsAnimated || !statsInView || !statsDataReady || !statsBlock) return;
+    statsAnimated = true;
+    statsBlock.querySelectorAll('.stat__num[data-target]').forEach(animateCount);
+  }
+  BPK.statsDataReady = function () {
+    statsDataReady = true;
+    tryAnimateStats();
+  };
+
   if (statsBlock) {
     const statsIO = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.querySelectorAll('.stat__num[data-target]').forEach(animateCount);
+          statsInView = true;
+          tryAnimateStats();
           statsIO.unobserve(entry.target);
         }
       });

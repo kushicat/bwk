@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resource Library — Ballpoint with Kushal</title>
-  <meta name="description" content="Free study material: vocabulary drills, spelling practice, mock tests, and exam checklists — searchable and filterable, by Ballpoint with Kushal." />
-  <meta property="og:title" content="Resource Library — Ballpoint with Kushal" />
-  <meta property="og:description" content="Search and filter free study resources — no payment, no sign-up wall." />
+  <title>Blog — Ballpoint with Kushal</title>
+  <meta name="description" content="Real experiences, exam strategy, and lessons from IBA MBA admission, bank job preparation, and self-study — written in Bangla and English." />
+  <meta property="og:title" content="Blog — Ballpoint with Kushal" />
+  <meta property="og:description" content="Real experiences and exam strategy, in Bangla and English." />
   <meta property="og:image" content="assets/images/og-image.svg" />
   <meta name="theme-color" content="#0E0E10" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/logos/favicon-32.png" />
@@ -14,13 +14,14 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/utilities.css" />
   <link rel="stylesheet" href="css/responsive.css" />
   <link rel="stylesheet" href="css/library.css" />
+  <link rel="stylesheet" href="css/blog.css" />
 </head>
 
 <body>
@@ -34,13 +35,12 @@
         <span class="navbar__logo-text"><strong>BALLPOINT</strong><span>WITH KUSHAL</span></span>
       </a>
       <ul class="navbar__links">
-        <li><a href="about.html">About</a></li>
-        <li><a href="courses.html">Courses</a></li>
-        <li><a href="ebooks.html">Ebooks</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#courses">Courses</a></li>
         <li><a href="resources.html">Resources</a></li>
         <li><a href="blog.html">Blog</a></li>
         <li><a href="index.html#faq">FAQ</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
       </ul>
       <div class="navbar__actions">
         <a class="btn btn--primary btn--sm" href="index.html#waitlist">Join Waitlist</a>
@@ -52,13 +52,12 @@
   </header>
 
   <div class="mobile-drawer" id="mobileDrawer">
-    <a href="about.html">About</a>
-    <a href="courses.html">Courses</a>
-    <a href="ebooks.html">Ebooks</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#courses">Courses</a>
     <a href="resources.html">Resources</a>
     <a href="blog.html">Blog</a>
     <a href="index.html#faq">FAQ</a>
-    <a href="contact.html">Contact</a>
+    <a href="index.html#contact">Contact</a>
     <a class="btn btn--primary btn--full mt-sm" href="index.html#waitlist">Join Waitlist</a>
   </div>
 
@@ -72,41 +71,26 @@
 
   <main id="main">
     <!-- ==================================================================
-         RESOURCE LIBRARY
-         The ONLY file you ever need to touch to add a new resource card is
-         data/resources.json. Schema per entry:
-           {
-             "tag":   "Short label shown on the card, e.g. '1300 Words'",
-             "cats":  ["Vocabulary","Bank Job"],  // any strings, any count —
-                                                    // filter pills are built
-                                                    // automatically from these
-             "title": "Full title of the resource",
-             "desc":  "One or two sentence description.",
-             "meta":  "e.g. '287 questions · 16 chapters'",
-             "file":  "exact-filename-as-uploaded.html"  // omit + use
-                                                           // "soon": true for
-                                                           // tools not yet built
-           }
-         Tools open in a new tab since each is a standalone offline app.
+         BLOG LISTING
+         The ONLY files you touch to publish a new post:
+         1. Write the post as a .md file, save it in /blog
+         2. Add one entry to data/blog.json pointing at that file
+         That's it — this page and post.html do the rest automatically.
          ================================================================== -->
-    <section class="section lib-hero" aria-labelledby="lib-title">
+    <section class="section lib-hero" aria-labelledby="blog-title">
       <div class="container">
         <div class="section-head" data-reveal>
-          <span class="eyebrow">Free</span>
-          <h1 id="lib-title">Resource Library</h1>
-          <p>Search the library or filter by category. New tools are added as they're built — this hub grows over time.</p>
+          <span class="eyebrow">Real stories, real strategy</span>
+          <h1 id="blog-title">Blog</h1>
+          <p>Experiences, lessons, and exam strategy — written in Bangla and English.</p>
         </div>
 
         <div class="lib-controls" data-reveal data-reveal-delay="1">
-          <label class="lib-search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#0E0E10" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
-            <input id="search" type="search" placeholder="Search resources, e.g. vocabulary, spelling, mock test..." aria-label="Search resources" />
-          </label>
-          <div class="lib-filters" id="filters"></div>
+          <div class="lib-filters" id="langFilters"></div>
         </div>
 
-        <div class="grid grid--3" id="cards" aria-live="polite"></div>
-        <div class="lib-empty" id="empty">No resources match that search yet. Try another keyword or category.</div>
+        <div class="blog-grid" id="blogGrid" aria-live="polite"></div>
+        <div class="lib-empty" id="blogEmpty">No posts in this language yet.</div>
       </div>
     </section>
   </main>
@@ -126,21 +110,15 @@
         </div>
         <div class="footer__col">
           <h4>Learn</h4>
-          <a href="courses.html">Courses</a>
-          <a href="ebooks.html">Ebooks</a>
+          <a href="index.html#courses">Courses</a>
           <a href="resources.html">Free Resources</a>
+          <a href="blog.html">Blog</a>
         </div>
         <div class="footer__col">
           <h4>Brand</h4>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#contact">Contact</a>
           <a href="index.html#waitlist">Join Waitlist</a>
-        </div>
-        <div class="footer__col">
-          <h4>Coming soon</h4>
-          <a href="#" aria-disabled="true">Blog</a>
-          <a href="#" aria-disabled="true">Mock Tests</a>
-          <a href="#" aria-disabled="true">Student Dashboard</a>
         </div>
       </div>
       <div class="footer__bottom">
@@ -152,6 +130,6 @@
 
   <script src="js/navigation.js" defer></script>
   <script src="js/animations.js" defer></script>
-  <script src="js/library.js" defer></script>
+  <script src="js/blog.js" defer></script>
 </body>
 </html>

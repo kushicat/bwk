@@ -1,0 +1,12 @@
+[
+  {
+    "_comment": "HOW TO ADD A NEW POST: 1) Write your post as a .md file in the /blog folder. 2) Add one object here with matching 'file'. 3) Save — blog.html picks it up automatically, newest first by date. 'lang' must be 'bn' or 'en' so the post renders in the right font and the language filter works.",
+    "slug": "iba-mba-admission-experience",
+    "title": "আইবিএ এমবিএ এডমিশন টেস্ট — আমার অভিজ্ঞতা",
+    "excerpt": "৬৭ ইনটেকে আইবিএ এমবিএ এডমিশন টেস্ট দেওয়ার পুরো অভিজ্ঞতা — বুক লিস্ট, প্রিপারেশন স্ট্র্যাটেজি, আর ভাইভার গল্প।",
+    "date": "2026-06-27",
+    "lang": "bn",
+    "tags": ["IBA MBA", "Admission Test", "Experience"],
+    "file": "blog/iba-mba-experience-bn.md"
+  }
+]

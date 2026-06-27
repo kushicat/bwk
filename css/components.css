@@ -244,6 +244,37 @@
   border: 2.5px solid var(--ink); box-shadow: 5px 5px 0 var(--ink);
 }
 .ebook-card__cover span { display: block; font-family: var(--font-mono); font-size: var(--fs-small); font-weight: 600; opacity: 0.9; margin-top: 0.5rem; text-transform: none; }
+/* When a real cover image is supplied (b.cover in ebooks.json), it fills
+   this same slot instead of the flat colour + text block above. */
+.ebook-card__cover--img { padding: 0; overflow: hidden; }
+.ebook-card__cover--img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ------------------------------- QUOTE SECTION -----------------------------
+   Deliberately quiet: lots of empty space, one big textured quote mark
+   (real SVG grain via feTurbulence, not a flat icon), no card border, no
+   CTA. A breathing moment between Why and About. */
+.quote-section { padding-block: clamp(4rem, 10vw, 8rem); }
+.quote-block {
+  max-width: 720px; margin-inline: auto; text-align: center; position: relative;
+  padding: var(--space-lg) var(--space-md);
+}
+.quote-block__mark {
+  width: 90px; height: 90px; margin: 0 auto var(--space-sm);
+  color: var(--exam-yellow); display: block;
+  filter: drop-shadow(2px 2px 0 var(--ink));
+}
+.quote-block__mark text { fill: currentColor; }
+.quote-block__text {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.5rem, 3vw, 2.4rem); line-height: 1.3;
+  color: var(--ink); margin-bottom: var(--space-md);
+  text-transform: none; letter-spacing: -0.01em;
+}
+.quote-block__cite {
+  display: block; font-family: var(--font-mono); font-style: normal;
+  font-size: var(--fs-small); font-weight: 700; letter-spacing: 0.04em;
+  color: var(--color-text-muted); text-transform: uppercase;
+}
 
 /* ----------------------------- COMING SOON CARD ---------------------------
    Shown in place of Courses/Ebooks grids when their data file is empty.
@@ -287,7 +318,13 @@
   text-align: center; background: var(--white); border: var(--border-w) solid var(--ink);
   border-radius: var(--radius-md); padding: var(--space-md); box-shadow: var(--shadow-sm);
 }
-.stat__num { font-family: var(--font-mono); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; }
+.stat__num { font-family: var(--font-mono); font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; display: inline-block; }
+.stat__num--landed { animation: stat-land 0.35s var(--ease); }
+@keyframes stat-land {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); color: var(--ballpoint); }
+  100% { transform: scale(1); }
+}
 .stat__num .text-gradient { display: inline; }
 .stat__label { font-size: var(--fs-small); color: var(--color-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
 
