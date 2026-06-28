@@ -76,15 +76,33 @@
    yellow BACKGROUND with `color: var(--ink)` was relying on --ink meaning
    "dark" — and in dark mode --ink now means "light cream" instead, which
    gives ~1.3:1 contrast on yellow (WCAG AA needs 4.5:1 minimum). Every one
-   of those needs its text forced back to a literal dark colour here. */
+   of those needs its text forced back to a literal dark colour here.
+
+   .text-gradient (the highlighted-phrase effect, e.g. "AMBITIOUS
+   PROFESSIONALS" on the homepage) was missed from this list the first
+   time around — it was rebuilt twice after this list was originally
+   written, and never re-checked against it, so the cream dark-mode ink
+   color was sitting almost invisibly on its own yellow highlight.
+
+   .hero__chip is selected here WITHOUT its --br modifier on purpose:
+   .hero__chip--br overrides the background to var(--white), which in
+   dark mode becomes a dark navy surface colour, not actual white. If
+   --br were included in this forced-dark-text list, its text would be
+   dark-on-dark (an earlier version of this file had exactly that bug —
+   1.17:1 contrast, confirmed broken). Only .hero__chip--tl and
+   .hero__chip--mr keep the yellow background and need dark text;
+   .hero__chip--br should keep using the normal --ink token (which
+   already correctly becomes cream against its dark background). */
 [data-theme="dark"] .btn--ghost,
 [data-theme="dark"] .status-enrolling,
-[data-theme="dark"] .hero__chip,
+[data-theme="dark"] .hero__chip--tl,
+[data-theme="dark"] .hero__chip--mr,
 [data-theme="dark"] .timeline__item::before,
 [data-theme="dark"] .ebook-card__cover,
 [data-theme="dark"] .testimonial__avatar,
 [data-theme="dark"] .eyebrow,
 [data-theme="dark"] .card .tag,
+[data-theme="dark"] .text-gradient,
 [data-theme="dark"] .blog-card__lang,
 [data-theme="dark"] .coming-soon-card__tag {
   color: #0E0E10;
