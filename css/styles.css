@@ -210,19 +210,19 @@ p  { color: var(--color-text-soft); }
   box-decoration-break: clone;
   border-radius: 0.15em;
   box-shadow: 0 0 0 1.5px var(--ink);
-  background-repeat: no-repeat, repeat;
+  background-repeat: repeat, no-repeat;
   background-image:
-    linear-gradient(var(--exam-yellow), var(--exam-yellow)),
-    radial-gradient(circle, rgba(14,14,16,0.45) 0.55px, transparent 0.6px);
-  background-size: 0% 100%, 3px 3px;
+    radial-gradient(circle, rgba(14,14,16,0.45) 0.55px, transparent 0.6px),
+    linear-gradient(var(--exam-yellow), var(--exam-yellow));
+  background-size: 3px 3px, 0% 100%;
   background-position: left center, left center;
   transition: background-size 0.6s ease-out;
 }
 .text-gradient.is-revealed {
-  background-size: 100% 100%, 3px 3px;
+  background-size: 3px 3px, 100% 100%;
 }
 @media (prefers-reduced-motion: reduce) {
-  .text-gradient { transition: none; background-size: 100% 100%, 3px 3px; }
+  .text-gradient { transition: none; background-size: 3px 3px, 100% 100%; }
 }
 
 /* Monospace utility for stats, meta tags, question counters */
