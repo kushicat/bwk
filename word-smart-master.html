@@ -2,6 +2,8 @@
 <!--
   WORD SMART MASTER — single-file vocabulary drill app
   Built for: Ballpoint with Kushal
+
+Change timer here BOMB_DURATION_MS 
   ---------------------------------------------------------------
   HOW TO ADD YOUR FULL 824-WORD DATABASE
   1. Find the <script type="application/json" id="word-data"> block below.
@@ -1211,7 +1213,7 @@
      Purely visual pressure/feedback layer. It never auto-skips or auto-fails a
      question — timing out just freezes the bar and shows a "shattered" cue; the
      question stays fully open until the person answers or hits Skip. */
-  var BOMB_DURATION_MS = 8000; // 7-10s felt right for a short MCQ read; tune here if needed
+  var BOMB_DURATION_MS = 12000; // 7-10s felt right for a short MCQ read; tune here if needed
   var bombTimerHandle = null;
 
   function bombTimerReset(){
