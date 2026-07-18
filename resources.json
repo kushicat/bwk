@@ -18,6 +18,15 @@
     "feature": "Recommended"
   },
   {
+    "tag": "871 Words",
+    "cats": ["Vocabulary", "MCQ", "GRE", "IBA", "Bank Job", "BCS"],
+    "title": "Word Smart Master",
+    "desc": "Every thing you need to smartly master the word smart. A full vocabulary drill engine covering 7 question formats which are fill-in-the-blank, synonym match, antonym-in-context, odd-one-out and more with mnemonics and confusable-word traps built in.",
+    "meta": "871 words · 7 question types",
+    "file": "word-smart-master.html",
+    "feature": "New"
+  },
+  {
     "tag": "Reading",
     "cats": ["Reading", "MCQ"],
     "title": "Comprehension Drill",
