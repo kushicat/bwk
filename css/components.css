@@ -172,7 +172,7 @@
   border-radius: var(--radius-md); padding: var(--space-lg);
   box-shadow: var(--shadow-md);
   transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+
 }
 .card:hover {
   transform: translate(-4px, -6px);
@@ -655,35 +655,23 @@
   }
 }
 /* ============================================================================
-   CARD SURFACES — texture + hover life
-   The old cards were structurally fine (border, hard shadow, yellow icon
-   tile) but the interior was a flat white void with content stacked at the
-   top. Three additions fix that without touching any markup — important,
-   because resource cards are generated from JSON by main.js:
+   CARD SURFACES — texture, corner bloom, hover life
+   Applies to every white card: resource, course, ebook, video, contact,
+   stat, testimonial, form. No markup changes — resource cards are
+   generated from JSON by main.js, so everything here is CSS-only.
 
-   1. A faint dot grid across the surface, echoing the ruled notebook
-      backdrop in styles.css and the halftone in .text-gradient.
-   2. That grid drifts on hover, so the card feels like a physical sheet
-      shifting rather than a static box.
-   3. A yellow "marked" tick stamps into the top-right corner on hover —
-      the exam-paper metaphor, applied on interaction rather than at rest.
-
-   Texture is applied via background-image, NOT a pseudo-element. A
-   positioned ::before paints above non-positioned children in the CSS
-   painting order, so it would have sat on top of the card's own text.
-   Working around that needs isolation + z-index:-1; using the background
-   avoids the problem entirely and makes hover animation free.
+   Texture uses background-image, not a pseudo-element: a positioned
+   ::before paints above non-positioned children, so it would sit on top
+   of the card's own text.
    ============================================================================ */
 
 .card,
 .stat,
 .testimonial,
 .form-card:not(.form-card--embed) {
-  /* Dot colour is its own token so dark mode can flip it without
-     rewriting the gradient. rgba() is required — alpha can't be applied
-     to a var() hex inline. */
   --card-dot: rgba(14, 14, 16, 0.10);
   --card-dot-size: 14px;
+  --card-bloom: rgba(11, 107, 61, 0.55);
 
   background-color: var(--white);
   background-image:
@@ -702,29 +690,64 @@
 [data-theme="dark"] .testimonial,
 [data-theme="dark"] .form-card:not(.form-card--embed) {
   --card-dot: rgba(244, 241, 232, 0.11);
+  --card-bloom: rgba(47, 209, 124, 0.42);
 }
 
-/* Grid drifts diagonally on hover — one grid cell, so it reads as the
-   sheet settling rather than the pattern scrolling. */
 .card:hover {
   background-position: var(--card-dot-size) var(--card-dot-size);
 }
 
-/* ---- Corner tick: stamps in on hover ----
-   Positioned absolutely, so the card needs a containing block. .card has
-   no position of its own; adding relative here is safe because nothing
-   currently relies on the card being static. */
+/* isolation creates a stacking context so ::before can sit at z-index:-1
+   — above the card's background but below its text. */
 .card {
   position: relative;
-  overflow: hidden;   /* clips the tick's corner wedge to the radius */
+  overflow: hidden;
+  isolation: isolate;
 }
 
+/* ---- Corner ink bloom (top-left, always visible) ----
+   Tinted dots bleeding in from the corner, faded out by a mask. Same
+   14px grid as the neutral dots, so it reads as those dots being
+   stained rather than a second pattern on top. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+
+  background-image:
+    radial-gradient(circle, var(--card-bloom) 1.1px, transparent 1.2px);
+  background-size: var(--card-dot-size) var(--card-dot-size);
+  background-position: 0 0;
+
+  -webkit-mask-image: radial-gradient(
+    ellipse 55% 60% at 0% 0%, #000 0%, rgba(0,0,0,0.55) 30%, transparent 62%);
+          mask-image: radial-gradient(
+    ellipse 55% 60% at 0% 0%, #000 0%, rgba(0,0,0,0.55) 30%, transparent 62%);
+
+  transition: background-position 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Drifts in lockstep with the neutral grid — if only one layer moved,
+   the two dot patterns would visibly separate. */
+.card:hover::before {
+  background-position: var(--card-dot-size) var(--card-dot-size);
+}
+
+/* ---- Corner tick: stamps in on hover (top-right) ----
+   Check is an SVG data URI so ::before stays free for the bloom. */
 .card::after {
   content: "";
   position: absolute;
   top: -1px; right: -1px;
   width: 44px; height: 44px;
-  background: var(--exam-yellow);
+  background-color: var(--exam-yellow);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E0E10' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  background-size: 19px 19px;
+  background-position: 55% 48%;
+  background-repeat: no-repeat;
   border-left: 3px solid var(--ink);
   border-bottom: 3px solid var(--ink);
   border-bottom-left-radius: var(--radius-md);
@@ -735,24 +758,7 @@
 }
 .card:hover::after { transform: translate(0, 0); }
 
-/* The checkmark itself, drawn with two borders on a rotated box —
-   avoids needing an SVG in markup that main.js would have to generate. */
-.card::before {
-  content: "";
-  position: absolute;
-  top: 13px; right: 15px;
-  width: 8px; height: 15px;
-  border-right: 3px solid var(--ink);
-  border-bottom: 3px solid var(--ink);
-  transform: rotate(45deg) scale(0);
-  transform-origin: center;
-  transition: transform 0.28s cubic-bezier(0.34, 1.4, 0.64, 1) 0.06s;
-  pointer-events: none;
-  z-index: 3;
-}
-.card:hover::before { transform: rotate(45deg) scale(1); }
-
-/* ---- Icon tile: tilts and lifts with the card ---- */
+/* ---- Icon tile tilts with the card ---- */
 .card__icon {
   transition:
     transform 0.28s cubic-bezier(0.34, 1.4, 0.64, 1),
@@ -764,15 +770,11 @@
   box-shadow: 3px 3px 0 var(--ink);
 }
 
-/* ---- Video cards: keep the tick clear of the embed ----
-   .video-card has padding:0 and its media fills the top edge, so the
-   corner tick would land on the thumbnail. Move it to the body instead. */
-.video-card::after,
-.video-card::before { display: none; }
-.video-card__body { position: relative; }
+/* ---- Video cards: media fills the top edge, so the tick would land on
+        the thumbnail. Hide it there. ---- */
+.video-card::after { display: none; }
 
-/* ---- Ebook covers sit on the textured card; give them their own
-        flat ground so the dots don't show through the gap. ---- */
+/* ---- Ebook covers need a flat ground so dots don't show through ---- */
 .ebook-card__cover { background-color: var(--ballpoint); }
 
 @media (prefers-reduced-motion: reduce) {
