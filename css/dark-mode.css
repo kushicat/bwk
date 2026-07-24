@@ -1,3 +1,201 @@
+/* ============================================================================
+   BALLPOINT WITH KUSHAL — dark-mode.css
+   Dark mode works by overriding the same CSS custom properties every
+   component already reads from (--ink, --paper, --white, --color-*, etc.)
+   under [data-theme="dark"] on <html>. Because every component file was
+   already written against these tokens rather than hard-coded colours,
+   this single override block re-themes virtually the entire site without
+   editing styles.css/components.css/etc. directly.
+
+   Toggled by js/theme.js, persisted in localStorage, defaults to the
+   user's OS-level prefers-color-scheme on first visit.
+   ============================================================================ */
+
+[data-theme="dark"] {
+  --ink: #F4F1E8;              /* "ink" becomes the light colour in dark mode —
+                                   every component already uses --ink for text/
+                                   borders, so this one flip handles most of it */
+  --paper: #14151A;            /* page background */
+  --paper-alt: #1B1C23;        /* alt-section background */
+  --white: #1E1F26;            /* card/surface background (was literal white) */
+  --color-surface: #1E1F26;
+  --color-bg: #14151A;
+  --color-text: #F4F1E8;
+  --color-text-soft: #C9C6BC;
+  --color-text-muted: #8E8C86;
+  --color-border: #F4F1E8;
+  --color-border-soft: #3A3B44;
+
+  /* Accent colours stay roughly the same hue but brighten slightly so
+     they still read clearly against a near-black background instead of
+     looking muddy. */
+  --ballpoint: #5C7CFF;
+  --ballpoint-dark: #3E5CE0;
+  --color-primary-light: #232744;
+  --exam-yellow: #FFD23F;      /* stays — it's already high-contrast on dark */
+  --correct-green: #2FD17C;
+  --color-secondary-dark: #1FAE63;
+  --color-secondary-light: #16291F;
+  --alert-red: #FF6B57;
+
+  /* Shadows: a hard black offset shadow disappears on a near-black
+     background, so dark mode uses a soft light-glow offset instead —
+     visually equivalent "lift" cue, adapted to the inverted palette. */
+  --shadow-sm: 4px 4px 0 rgba(0,0,0,0.6);
+  --shadow-md: 6px 6px 0 rgba(0,0,0,0.6);
+  --shadow-lg: 9px 9px 0 rgba(0,0,0,0.6);
+}
+
+/* Body background + the ruled notebook-grid lines need their own pass —
+   bg-grid reads --color-border-soft already via styles.css, so the token
+   override above handles its colour, but the base <body> background and
+   a couple of literal-colour spots below need explicit handling. */
+[data-theme="dark"] body { background: var(--paper); }
+
+/* Things that were hard-coded rather than token-based, found by sweeping
+   components.css for literal hex/rgba values instead of var(...): the
+   "problem" column background in Why This Exists, and the footer (which
+   was already dark in light mode, so it needs a check that it still
+   reads correctly rather than blending into the now-dark page). */
+[data-theme="dark"] .compare__col--problem { background: #2A1816; border-color: #5C2620; }
+[data-theme="dark"] .footer { background: #0A0A0D; border-top-color: #0A0A0D; }
+[data-theme="dark"] .footer__bottom { border-top-color: #2A2B33; }
+
+/* Form inputs and the embedded Google Form frame: the iframe itself is
+   Google's own white UI and can't be retthemed (cross-origin), so we at
+   least frame it clearly rather than let a bright white rectangle clash
+   against the dark card around it. */
+[data-theme="dark"] .form-field input,
+[data-theme="dark"] .form-field select,
+[data-theme="dark"] .form-field textarea { background: var(--paper); color: var(--ink); }
+[data-theme="dark"] .form-card--embed { background: #fff; } /* keep a light frame so the white Google iframe doesn't look like a rendering error */
+
+/* ---------------- YELLOW-BACKGROUND TEXT CONTRAST FIX ----------------------
+   --exam-yellow is deliberately left unchanged in dark mode (it's already
+   high-contrast against a dark page). But every component that pairs a
+   yellow BACKGROUND with `color: var(--ink)` was relying on --ink meaning
+   "dark" — and in dark mode --ink now means "light cream" instead, which
+   gives ~1.3:1 contrast on yellow (WCAG AA needs 4.5:1 minimum). Every one
+   of those needs its text forced back to a literal dark colour here.
+
+   .text-gradient (the highlighted-phrase effect, e.g. "AMBITIOUS
+   PROFESSIONALS" on the homepage) was missed from this list the first
+   time around — it was rebuilt twice after this list was originally
+   written, and never re-checked against it, so the cream dark-mode ink
+   color was sitting almost invisibly on its own yellow highlight.
+
+   .hero__chip is selected here WITHOUT its --br modifier on purpose:
+   .hero__chip--br overrides the background to var(--white), which in
+   dark mode becomes a dark navy surface colour, not actual white. If
+   --br were included in this forced-dark-text list, its text would be
+   dark-on-dark (an earlier version of this file had exactly that bug —
+   1.17:1 contrast, confirmed broken). Only .hero__chip--tl and
+   .hero__chip--mr keep the yellow background and need dark text;
+   .hero__chip--br should keep using the normal --ink token (which
+   already correctly becomes cream against its dark background). */
+[data-theme="dark"] .btn--ghost,
+[data-theme="dark"] .status-enrolling,
+[data-theme="dark"] .hero__chip--tl,
+[data-theme="dark"] .hero__chip--mr,
+[data-theme="dark"] .timeline__item::before,
+[data-theme="dark"] .ebook-card__cover,
+[data-theme="dark"] .testimonial__avatar,
+[data-theme="dark"] .eyebrow,
+[data-theme="dark"] .card .tag,
+[data-theme="dark"] .text-gradient,
+[data-theme="dark"] .blog-card__lang,
+[data-theme="dark"] .coming-soon-card__tag {
+  color: #0E0E10;
+}
+[data-theme="dark"] .btn--ghost:hover { color: var(--exam-yellow); } /* this one flips bg to --ink on hover, so text should become yellow, not stay dark */
+[data-theme="dark"] .footer__socials a:hover { color: #0E0E10; }
+
+/* --------------------------- THEME TOGGLE BUTTON --------------------------- */
+.theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border: 2.5px solid var(--ink);
+  border-radius: var(--radius-sm); background: var(--white);
+  box-shadow: 3px 3px 0 var(--ink); flex-shrink: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.theme-toggle:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+.theme-toggle--mobile { align-self: flex-start; margin-bottom: var(--space-sm); }
+
+/* --------------------------- SKYLINE THEMING ---------------------------
+   Light mode: flat ink silhouette, windows barely visible (subtle, not
+   glowing), no stars, no beacons.
+   Dark mode: buildings darken further against the near-black sky, windows
+   marked .lit get a warm glow, beacons blink red, stars twinkle in.
+   All colour/visibility logic lives here — assets/images/skyline.svg
+   itself never needs to change to support either mode. */
+.skyline-wrap { position: relative; overflow: hidden; background: var(--paper); }
+.skyline-spacer { height: clamp(2rem, 6vw, 4rem); }
+.skyline-img { width: 100%; line-height: 0; }
+.skyline-img svg.skyline-svg { width: 100%; height: clamp(140px, 22vw, 220px); display: block; }
+
+.skyline-svg .building { fill: var(--ink); }
+.skyline-svg .road { fill: var(--ink); }
+.skyline-svg .road-line { stroke: var(--paper); stroke-width: 2; opacity: 0.5; }
+.skyline-svg .pole, .skyline-svg .pole-arm, .skyline-svg .wire {
+  stroke: var(--ink); stroke-width: 2; fill: none; opacity: 0.7;
+}
+
+/* Windows: in light mode, a slightly lighter notch in the building so the
+   grid reads as architectural detail without implying anything is "lit". */
+.skyline-svg .window { fill: var(--paper); opacity: 0.18; }
+.skyline-svg .window.lit { opacity: 0.18; } /* no different from unlit in light mode */
+.skyline-svg .beacon { fill: var(--paper); opacity: 0; } /* invisible in light mode */
+.skyline-svg .star { fill: var(--exam-yellow); opacity: 0; } /* invisible in light mode */
+
+[data-theme="dark"] .skyline-svg .window.lit {
+  fill: #FFCB6B;
+  opacity: 0.95;
+  filter: drop-shadow(0 0 3px rgba(255,203,107,0.8)) drop-shadow(0 0 6px rgba(255,203,107,0.4));
+  animation: window-flicker 5s ease-in-out infinite;
+}
+[data-theme="dark"] .skyline-svg .window:not(.lit) { opacity: 0.35; fill: #2A2B33; }
+[data-theme="dark"] .skyline-svg .beacon {
+  fill: #FF4D4D; opacity: 0.9;
+  filter: drop-shadow(0 0 4px rgba(255,77,77,0.9));
+  animation: beacon-blink 2.4s steps(1) infinite;
+}
+[data-theme="dark"] .skyline-svg .star {
+  opacity: 0.85;
+  animation: star-twinkle 3.5s ease-in-out infinite;
+}
+[data-theme="dark"] .skyline-svg .building { fill: #0C0D10; }
+[data-theme="dark"] .skyline-svg .road { fill: #0C0D10; }
+
+@keyframes window-flicker {
+  0%, 92%, 100% { opacity: 0.95; }
+  94% { opacity: 0.5; }
+  96% { opacity: 0.95; }
+}
+@keyframes beacon-blink {
+  0%, 40% { opacity: 0.9; }
+  50%, 90% { opacity: 0.1; }
+  100% { opacity: 0.9; }
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.95; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skyline-svg .window.lit, .skyline-svg .beacon, .skyline-svg .star { animation: none; }
+}
+/* ============================================================
+   FIXES — footer wordmark + theme-toggle icon contrast
+   ============================================================ */
+
+/* ---- Theme toggle icon ----
+   Icons use stroke="currentColor", so setting `color` drives them.
+   Hardcoded rather than tokenised: the button sits on --paper in light
    and on the dark navbar in dark, so it can't follow a single token. */
 .navbar .theme-toggle,
 .mobile-drawer .theme-toggle {
