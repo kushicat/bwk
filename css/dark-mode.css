@@ -237,9 +237,11 @@
    is a separate full-size raster pass per frame, and layers 5–6
    were doing almost nothing visible once 3–4 were in place. */
 [data-theme="dark"] .section-head h2 {
+   
   color: #FFF3C4;
   animation: neon-exam 2.4s ease-in-out infinite;
 }
+[data-theme="dark"] .section-head h2 { text-shadow: none; }
 
 @keyframes neon-exam {
   0%, 100% {
