@@ -189,3 +189,67 @@
 @media (prefers-reduced-motion: reduce) {
   .skyline-svg .window.lit, .skyline-svg .beacon, .skyline-svg .star { animation: none; }
 }
+/* ============================================================
+   FIXES — footer wordmark + theme-toggle icon contrast
+   ============================================================ */
+
+/* ---- Theme toggle icon ----
+   Icons use stroke="currentColor", so setting `color` drives them.
+   Hardcoded rather than tokenised: the button sits on --paper in light
+   and on the dark navbar in dark, so it can't follow a single token. */
+.navbar .theme-toggle,
+.mobile-drawer .theme-toggle {
+  color: #0E0E10;
+}
+[data-theme="dark"] .navbar .theme-toggle,
+[data-theme="dark"] .mobile-drawer .theme-toggle {
+  color: #F5F2E8;
+}
+.theme-toggle svg { stroke: currentColor; fill: none; }
+
+/* ---- Footer wordmark ----
+   Overrides the inherited navbar colour and adds the ink sheen. */
+.footer__logo-text strong {
+  color: #F5F2E8;   /* fallback if background-clip:text unsupported */
+
+  background-image: linear-gradient(
+    100deg,
+    #F5F2E8 0%,
+    #FFFFFF 18%,
+    var(--exam-yellow) 34%,
+    #FFFFFF 50%,
+    #F5F2E8 68%,
+    #F5F2E8 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: wordmark-sheen 5s var(--ease) infinite;
+}
+
+.footer__logo-text > span {
+  color: var(--exam-yellow);
+}
+
+@keyframes wordmark-sheen {
+  0%   { background-position: 100% 0; }
+  55%  { background-position: 0% 0; }
+  100% { background-position: 0% 0; }
+}
+
+@supports not (background-clip: text) {
+  .footer__logo-text strong {
+    -webkit-text-fill-color: #F5F2E8;
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__logo-text strong {
+    animation: none;
+    background-position: 0% 0;
+  }
+}
