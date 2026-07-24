@@ -551,3 +551,75 @@
   0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.8; }
   100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; }
 }
+/* ============================================================================
+   HERO PORTRAIT — slow strip-displacement glitch
+   Two masked copies of the portrait sit over the original. Each mask is a
+   repeating-linear-gradient, so one element yields many thin horizontal
+   strips. Displacement animates background-position-x rather than
+   transform: a transform would move the whole layer and spill past the
+   3px border; shifting the background moves the image INSIDE each strip,
+   so nothing escapes the frame.
+   Timing is mostly dead air — ~90% of each cycle sits at rest, with brief
+   slips. Constant motion reads as a broken image; rare motion reads as a
+   signal dropping out.
+   ============================================================================ */
+.hero__photo::before,
+.hero__photo::after {
+  content: "";
+  position: absolute;
+  inset: var(--border-w);           /* sit inside the border, not over it */
+  border-radius: 3px;
+  background-image: url(../assets/images/hero-portrait.jpg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Layer A — wider strips, upper bias, warm shift */
+.hero__photo::before {
+  -webkit-mask-image: repeating-linear-gradient(
+    to bottom, #000 0 9px, transparent 9px 74px);
+          mask-image: repeating-linear-gradient(
+    to bottom, #000 0 9px, transparent 9px 74px);
+  animation: slice-a 14s steps(1, end) infinite;
+}
+
+/* Layer B — thinner strips, offset phase, cool shift */
+.hero__photo::after {
+  -webkit-mask-image: repeating-linear-gradient(
+    to bottom, transparent 0 41px, #000 41px 46px, transparent 46px 103px);
+          mask-image: repeating-linear-gradient(
+    to bottom, transparent 0 41px, #000 41px 46px, transparent 46px 103px);
+  animation: slice-b 14s steps(1, end) infinite;
+}
+
+@keyframes slice-a {
+  0%, 22%   { background-position-x: 0;     filter: none; }
+  23%, 24%  { background-position-x: -7px;  filter: hue-rotate(-14deg) saturate(1.15); }
+  25%, 57%  { background-position-x: 0;     filter: none; }
+  58%, 59%  { background-position-x: 5px;   filter: hue-rotate(9deg); }
+  60%, 100% { background-position-x: 0;     filter: none; }
+}
+
+@keyframes slice-b {
+  0%, 23%   { background-position-x: 0;    filter: none; }
+  24%, 25%  { background-position-x: 6px;  filter: hue-rotate(20deg) saturate(1.2); }
+  26%, 79%  { background-position-x: 0;    filter: none; }
+  80%, 81%  { background-position-x: -4px; filter: hue-rotate(-11deg); }
+  82%, 100% { background-position-x: 0;    filter: none; }
+}
+
+/* Chips must stay above the glitch layers — ::after otherwise paints
+   over in-flow content, and the chips currently have no z-index. */
+.hero__chip { z-index: 3; }
+
+@media (max-width: 768px) {
+  .hero__photo::before,
+  .hero__photo::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__photo::before,
+  .hero__photo::after { display: none; }
+}
