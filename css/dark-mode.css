@@ -190,56 +190,41 @@
   .skyline-svg .window.lit, .skyline-svg .beacon, .skyline-svg .star { animation: none; }
 }
 /* ============================================================
-   FIXES — footer wordmark + theme-toggle icon contrast
+   FIXES + EFFECTS
    ============================================================ */
 
 /* ---- Theme toggle icon ----
-   Icons use stroke="currentColor", so setting `color` drives them.
-   Hardcoded rather than tokenised: the button sits on --paper in light
-   and on the dark navbar in dark, so it can't follow a single token. */
-.navbar .theme-toggle,
-.mobile-drawer .theme-toggle {
-  color: #0E0E10;
-}
-[data-theme="dark"] .navbar .theme-toggle,
-[data-theme="dark"] .mobile-drawer .theme-toggle {
-  color: #F5F2E8;
-}
-.theme-toggle svg { stroke: currentColor; fill: none; }
+   The UA stylesheet gives <button> color:buttontext (black) and
+   styles.css never sets color:inherit — so the icon ignored the
+   theme entirely. The button's background is var(--white) in both
+   modes, so var(--ink) is the correct paired foreground. */
+.theme-toggle { color: var(--ink); }
 
 /* ---- Footer wordmark ----
-   Overrides the inherited navbar colour and adds the ink sheen. */
+   The footer is dark in BOTH themes (light mode: background is
+   var(--ink); dark mode: an explicit #0A0A0D override above), so
+   these colours are fixed rather than tokenised on purpose. */
 .footer__logo-text strong {
-  color: #F5F2E8;   /* fallback if background-clip:text unsupported */
-
+  color: #F5F2E8;
   background-image: linear-gradient(
     100deg,
-    #F5F2E8 0%,
-    #FFFFFF 18%,
-    var(--exam-yellow) 34%,
-    #FFFFFF 50%,
-    #F5F2E8 68%,
-    #F5F2E8 100%
+    #F5F2E8 0%, #FFFFFF 18%, var(--exam-yellow) 34%,
+    #FFFFFF 50%, #F5F2E8 68%, #F5F2E8 100%
   );
   background-size: 250% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
           background-clip: text;
   -webkit-text-fill-color: transparent;
-
   animation: wordmark-sheen 5s var(--ease) infinite;
 }
-
-.footer__logo-text > span {
-  color: var(--exam-yellow);
-}
+.footer__logo-text > span { color: var(--exam-yellow); }
 
 @keyframes wordmark-sheen {
   0%   { background-position: 100% 0; }
   55%  { background-position: 0% 0; }
   100% { background-position: 0% 0; }
 }
-
 @supports not (background-clip: text) {
   .footer__logo-text strong {
     -webkit-text-fill-color: #F5F2E8;
@@ -247,9 +232,77 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .footer__logo-text strong {
-    animation: none;
-    background-position: 0% 0;
+/* ---- Section headings: neon tube (dark mode only) ----
+   Four shadow layers, not six. Each additional large-radius blur
+   is a separate full-size raster pass per frame, and layers 5–6
+   were doing almost nothing visible once 3–4 were in place. */
+[data-theme="dark"] .section-head h2 {
+  color: #FFF3C4;
+  animation: neon-exam 2.4s ease-in-out infinite;
+}
+
+@keyframes neon-exam {
+  0%, 100% {
+    color: #FFF3C4;
+    text-shadow:
+      0 0 5px  #FFD23F,
+      0 0 14px #FFA800,
+      0 0 30px #FF8A00,
+      2px 2px 1px #6B4E0A;
   }
+  50% {
+    color: #B08A1E;
+    text-shadow:
+      0 0 3px  #7A5A0C,
+      0 0 8px  #6B4E0A,
+      0 0 16px #6B4E0A,
+      2px 2px 1px #3A2A05;
+  }
+}
+
+/* ---- Ambient halo behind each heading ----
+   z-index:0 on the parent creates a stacking context, so the -1
+   pseudo-element sits behind the text but still IN FRONT of the
+   section background. Without that, it vanishes on .section--alt. */
+[data-theme="dark"] .section-head {
+  position: relative;
+  z-index: 0;
+}
+[data-theme="dark"] .section-head::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 45%;
+  width: 70%; height: 150px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center,
+              rgba(255, 210, 63, 0.12) 0%,
+              rgba(255, 210, 63, 0) 70%);
+  pointer-events: none;
+  z-index: -1;
+  animation: halo-breathe 2.4s ease-in-out infinite;
+}
+@keyframes halo-breathe {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* ---- Performance: freeze the glow on small screens ----
+   Keeps the look, drops the per-frame repaint cost where it hurts. */
+@media (max-width: 768px) {
+  [data-theme="dark"] .section-head h2 {
+    animation: none;
+    color: #FFF3C4;
+    text-shadow: 0 0 5px #FFD23F, 0 0 16px #FF8A00, 2px 2px 1px #6B4E0A;
+  }
+  [data-theme="dark"] .section-head::before { animation: none; opacity: 0.7; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer__logo-text strong { animation: none; background-position: 0% 0; }
+  [data-theme="dark"] .section-head h2 {
+    animation: none;
+    color: #FFF3C4;
+    text-shadow: 0 0 5px #FFD23F, 0 0 16px #FF8A00, 2px 2px 1px #6B4E0A;
+  }
+  [data-theme="dark"] .section-head::before { animation: none; opacity: 0.7; }
 }
