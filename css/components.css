@@ -582,7 +582,7 @@
     to bottom, #000 0 9px, transparent 9px 74px);
           mask-image: repeating-linear-gradient(
     to bottom, #000 0 9px, transparent 9px 74px);
-  animation: slice-a 14s steps(1, end) infinite;
+  animation: slice-a 24s steps(1, end) infinite;
 }
 
 /* Layer B — thinner strips, offset phase, cool shift */
